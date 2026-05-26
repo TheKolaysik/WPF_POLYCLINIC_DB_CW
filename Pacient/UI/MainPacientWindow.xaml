@@ -1,0 +1,150 @@
+﻿<Window x:Class="WPF_POLYCLINIC_DB_CourseWork.Employee.UI.MainPacientWindow"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:local="clr-namespace:WPF_POLYCLINIC_DB_CourseWork.Employee.UI"
+        mc:Ignorable="d"
+        Title="Карточка Пациента" Height="550" Width="940" Background="#FF971B1B" MinWidth="940" MinHeight="540">
+    <Grid RenderTransformOrigin="0.5,0.5">
+        <Grid.Background>
+            <LinearGradientBrush EndPoint="0.5,1" StartPoint="0.5,0">
+                <LinearGradientBrush.RelativeTransform>
+                    <TransformGroup>
+                        <ScaleTransform CenterY="0.5" CenterX="0.5"/>
+                        <SkewTransform CenterX="0.5" CenterY="0.5"/>
+                        <RotateTransform Angle="90" CenterX="0.5" CenterY="0.5"/>
+                        <TranslateTransform/>
+                    </TransformGroup>
+                </LinearGradientBrush.RelativeTransform>
+                <GradientStop Color="#FFFA79D5"/>
+                <GradientStop Color="#FFCBED6C" Offset="1"/>
+            </LinearGradientBrush>
+        </Grid.Background>
+
+        <Grid.ColumnDefinitions>
+            <ColumnDefinition Width="0"/>
+            <ColumnDefinition Width="200"/>
+            <ColumnDefinition Width="*"/>
+        </Grid.ColumnDefinitions>
+
+        <Grid.RowDefinitions>
+            <RowDefinition Height="*"/>
+            <RowDefinition Height="Auto"/>
+        </Grid.RowDefinitions>
+
+        <Border Grid.Row="0" Grid.Column="0" BorderThickness="0,0,0,0" CornerRadius="0,20,20,0" Grid.ColumnSpan="2">
+            <Border.Background>
+                <LinearGradientBrush EndPoint="0.5,1" StartPoint="0.5,0" MappingMode="RelativeToBoundingBox" SpreadMethod="Pad">
+                    <LinearGradientBrush.RelativeTransform>
+                        <TransformGroup>
+                            <ScaleTransform CenterY="0.5" CenterX="0.5"/>
+                            <SkewTransform CenterX="0.5" CenterY="0.5"/>
+                            <RotateTransform Angle="136" CenterX="0.5" CenterY="0.5"/>
+                            <TranslateTransform/>
+                        </TransformGroup>
+                    </LinearGradientBrush.RelativeTransform>
+                    <GradientStop Color="#FFEE15DA"/>
+                    <GradientStop Color="#FF008CFF" Offset="1"/>
+                    <GradientStop Color="#FF0497C4" Offset="0.635"/>
+                </LinearGradientBrush>
+            </Border.Background>
+            <Grid Margin="10, 0, 10, 0">
+                <StackPanel Grid.Row="1" Margin="0,20,0, 0" VerticalAlignment="Top" Cursor="Hand">
+                    <Button x:Name="buttonHistory" Content="Моя приёмы" Height="30" Margin="0,5"  Foreground="WhiteSmoke" FontFamily="Segoe UI Black" Click="buttonHistory_Click" >
+                        <Button.Background>
+                            <SolidColorBrush Color="#FF665959"/>
+                        </Button.Background>
+                        <Button.Resources>
+                            <Style TargetType="Border">
+                                <Setter Property="CornerRadius" Value="5"/>
+                            </Style>
+                        </Button.Resources>
+                    </Button>
+                    <Button x:Name="buttonDiagnosis" Content="Диагнозы" Height="30" Margin="0,5" FontFamily="Segoe UI Black" Foreground="WhiteSmoke" Click="buttonDiagnosis_Click" >
+                        <Button.Background>
+                            <SolidColorBrush Color="#FF665959"/>
+                        </Button.Background>
+                        <Button.Resources>
+                            <Style TargetType="Border">
+                                <Setter Property="CornerRadius" Value="5"/>
+                            </Style>
+                        </Button.Resources>
+                    </Button>
+                    <Button x:Name="buttonPrescription" Content="Рецепты" Height="30" Margin="0,5" FontFamily="Segoe UI Black" Foreground="WhiteSmoke" Click="buttonPrescription_Click" >
+                        <Button.Background>
+                            <SolidColorBrush Color="#FF665959"/>
+                        </Button.Background>
+                        <Button.Resources>
+                            <Style TargetType="Border">
+                                <Setter Property="CornerRadius" Value="5"/>
+                            </Style>
+                        </Button.Resources>
+                    </Button>
+                </StackPanel>
+
+                <StackPanel Grid.Row="2" VerticalAlignment="Center" Cursor="Hand">
+                    <Button x:Name="buttonExportExcel" Content="Экспорт в Excel" Height="30" Margin="0,5" FontFamily="Segoe UI Black" Foreground="WhiteSmoke" >
+                        <Button.Background>
+                            <SolidColorBrush Color="#FF665959"/>
+                        </Button.Background>
+                        <Button.Resources>
+                            <Style TargetType="Border">
+                                <Setter Property="CornerRadius" Value="5"/>
+                            </Style>
+                        </Button.Resources>
+                    </Button>
+                    <Button x:Name="buttonExportWord" Content="Экспорт в Word" Height="30" Margin="0,5" FontFamily="Segoe UI Black" Foreground="WhiteSmoke" >
+                        <Button.Background>
+                            <SolidColorBrush Color="#FF665959"/>
+                        </Button.Background>
+                        <Button.Resources>
+                            <Style TargetType="Border">
+                                <Setter Property="CornerRadius" Value="5"/>
+                            </Style>
+                        </Button.Resources>
+                    </Button>
+                </StackPanel>
+
+                <Button Content="О программе" Height="30" VerticalAlignment="Bottom" Margin="0,0,0,40" Cursor="Hand" FontFamily="Segoe UI Black" Foreground="WhiteSmoke" Click="Button_Click" >
+                    <Button.Background>
+                        <SolidColorBrush Color="#FF665959"/>
+                    </Button.Background>
+                    <Button.Resources>
+                        <Style TargetType="Border">
+                            <Setter Property="CornerRadius" Value="5"/>
+                        </Style>
+                    </Button.Resources>
+                </Button>
+            </Grid>
+        </Border>
+
+        <Border Grid.Row="0" Grid.Column="2">
+            <Grid>
+                <Frame NavigationUIVisibility="Hidden" x:Name="framePages"/>
+            </Grid>
+        </Border>
+
+        <StatusBar Grid.Row="1" Grid.ColumnSpan="3" Height="30" Background="#FF333333">
+            <StatusBar.ItemsPanel>
+                <ItemsPanelTemplate>
+                    <Grid>
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="*" />
+                            <ColumnDefinition Width="Auto" />
+                        </Grid.ColumnDefinitions>
+                    </Grid>
+                </ItemsPanelTemplate>
+            </StatusBar.ItemsPanel>
+
+            <StatusBarItem Grid.Column="0" Margin="15,0">
+                <TextBlock x:Name="txtPatientFio" Foreground="White" VerticalAlignment="Center" FontSize="12" Text="Пациент: Петров Петр Петрович" />
+            </StatusBarItem>
+
+            <StatusBarItem Grid.Column="1" Margin="15,0">
+                <TextBlock x:Name="txtNextAppointment" Foreground="White" VerticalAlignment="Center" FontSize="12" Text="Следующий прием: 28.05.2026 в 14:30" Width="511" />
+            </StatusBarItem>
+        </StatusBar>
+
+    </Grid>
+</Window>

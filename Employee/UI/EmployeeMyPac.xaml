@@ -1,0 +1,53 @@
+﻿<Page x:Class="WPF_POLYCLINIC_DB_CourseWork.Employee.UI.EmployeeMyPac"
+      xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+      xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+      xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
+      xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
+      xmlns:local="clr-namespace:WPF_POLYCLINIC_DB_CourseWork.Employee.UI"
+      mc:Ignorable="d" 
+      d:DesignHeight="450" d:DesignWidth="800"
+      Title="EmployeeMyPac">
+
+    <Grid Margin="20">
+        <Grid.RowDefinitions>
+            <!-- Строка для заголовка -->
+            <RowDefinition Height="Auto" />
+            <!-- Строка для таблицы (занимает все свободное место) -->
+            <RowDefinition />
+            <!-- Строка для кнопок -->
+            <RowDefinition Height="44" />
+            <RowDefinition Height="34.72"/>
+        </Grid.RowDefinitions>
+
+        <!-- Заголовок -->
+        <Label Content="Мои пациенты" 
+           Grid.Row="0" 
+           HorizontalAlignment="Center" 
+           FontSize="16" FontWeight="Bold" Width="232"/>
+
+        <!-- Таблица (убрали RowSpan) -->
+        <DataGrid d:ItemsSource="{d:SampleData ItemCount=5}" 
+              Grid.Row="1" 
+              Margin="10,10,10,10"/>
+
+        <!-- Контейнер для кнопки и комбобокса -->
+        <StackPanel Grid.Row="2" 
+                Orientation="Horizontal" 
+                HorizontalAlignment="Left" 
+                Margin="20,10,0,0" Width="213">
+
+            <ComboBox Width="120" 
+                  VerticalAlignment="Center" 
+                  Margin="5" Height="24"/>
+
+            <Button Content="Выбрать" 
+                Width="68" 
+                Height="24" 
+                Margin="5"/>
+
+        </StackPanel>
+        <Label Grid.Row="3" Margin="0,5,0,0" HorizontalAlignment="Center" 
+FontSize="16" FontWeight="Bold" Width="232"></Label>
+        <Button Content="Назначить приём" HorizontalAlignment="Right" Grid.Row="2" VerticalAlignment="Top" Height="24" Margin="0,15,20,0" Width="150" Click="Button_Click"/>
+    </Grid>
+</Page>

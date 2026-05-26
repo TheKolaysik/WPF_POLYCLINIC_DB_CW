@@ -1,0 +1,82 @@
+﻿using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Text;
+using System.Threading.Tasks;
+using System.Windows;
+using System.Windows.Controls;
+using System.Windows.Data;
+using System.Windows.Documents;
+using System.Windows.Input;
+using System.Windows.Media;
+using System.Windows.Media.Imaging;
+using System.Windows.Navigation;
+using System.Windows.Shapes;
+using WPF_POLYCLINIC_DB_CourseWork.Employee.Logic;
+using WPF_POLYCLINIC_DB_CourseWork.Pacient.Logic;
+
+namespace WPF_POLYCLINIC_DB_CourseWork.Employee.UI
+{
+    /// <summary>
+    /// Логика взаимодействия для PacientHistoryPage.xaml
+    /// </summary>
+    public partial class PacientHistoryPage : Page
+    {
+        private PacientReport pacientReport;
+        private PacientService pacientService;
+        private long id;
+        public PacientHistoryPage(PacientReport pacientReport, PacientService pacientService)
+        {
+            InitializeComponent();
+            this.pacientReport = pacientReport;
+            this.pacientService = pacientService;
+            
+        }
+
+
+        public void UpdateData(long id)
+        {
+            this.id = id;
+            List<string> status = null;
+            switch (statusFilter.SelectedIndex)
+            {
+                case 0:
+                    status = new List<string>() { "Завершённый" };
+                    break;
+                case 1:
+                    status = new List<string>() { "Предстоящий" };
+                    break;
+                case 2:
+                    status = new List<string>() { "Завершённый", "Предстоящий" };
+                    break;
+                default:
+                    break;
+
+            }
+            List<string> type = null;
+            switch (typeFilter.SelectedIndex)
+            {
+                case 0:
+                    type = new List<string>() { "Направления" };
+                    break;
+                case 1:
+                    type = new List<string>() { "Приёмы" };
+                    break;
+                case 2:
+                    type = new List<string>() { "Направления", "Приёмы" };
+                    break;
+                default:
+                    break;
+
+            }
+            pacientReport.DisplayHistoryPacient(dataGridMyHistory, id, status, type);
+        }
+
+
+
+        private void Button_Click(object sender, RoutedEventArgs e)
+        {
+            UpdateData(id);
+        }
+    }
+}

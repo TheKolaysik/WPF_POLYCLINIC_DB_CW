@@ -12,6 +12,7 @@ using System.Windows.Media;
 using System.Windows.Media.Imaging;
 using System.Windows.Navigation;
 using System.Windows.Shapes;
+using WPF_POLYCLINIC_DB_CourseWork.Employee.Logic;
 
 namespace WPF_POLYCLINIC_DB_CourseWork.Employee.UI
 {
@@ -20,9 +21,18 @@ namespace WPF_POLYCLINIC_DB_CourseWork.Employee.UI
     /// </summary>
     public partial class EmployeeMyPac : Page
     {
-        public EmployeeMyPac()
+        private EmployeeService _employeeService;
+        private EmployeeReport _employeeReport;
+        public EmployeeMyPac(EmployeeReport employeeReport, EmployeeService employeeService)
         {
             InitializeComponent();
+            _employeeReport = employeeReport;
+            _employeeService = employeeService;
+        }
+
+        public void UpdateData(long IdDoctor)
+        {
+            _employeeReport.GetPatientsTableByDistrictDoctor(IdDoctor, dataGridMyPacients);
         }
 
         private void Button_Click(object sender, RoutedEventArgs e)

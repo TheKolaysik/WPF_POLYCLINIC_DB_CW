@@ -12,9 +12,11 @@ namespace WPF_POLYCLINIC_DB_CourseWork.Pacient.UI
 {
     public partial class PrescriptionDetailForm : Form
     {
-        public PrescriptionDetailForm()
+        private bool _editable = false;
+        public PrescriptionDetailForm(Boolean editable, long id)
         {
             InitializeComponent();
+            _editable = editable;
         }
 
         private void PrescriptionDetailForm_Load(object sender, EventArgs e)

@@ -14,12 +14,13 @@ using WPF_POLYCLINIC_DB_CourseWork.Models;
 
 namespace WPF_POLYCLINIC_DB_CourseWork.Employee.Logic
 {
-    internal class EmployeeService
+    public class EmployeeService
     {
         private static string connectionString = ConfigurationManager.ConnectionStrings["DefaultConnection"].ConnectionString;
         private SqlConnection connection = new SqlConnection(connectionString);
         private SqlDataAdapter adapter;
         private SqlCommand cmd;
+        public bool isVisitPacient = false;
         public List<Doctor> GetDoctorsWithSpecialties(string connectionString)
         {
             string sql = @"
@@ -98,7 +99,18 @@ namespace WPF_POLYCLINIC_DB_CourseWork.Employee.Logic
 
             // Получаем пациента по логину
             var doctor = connection.QueryFirstOrDefault<Doctor>(
-                "SELECT * FROM [Пациент] WHERE Login = @Login",
+                @"SELECT d.ID_doctor AS [ID_doctor], 
+        d.FirstName AS [FirstName], 
+        d.SurName AS [SurName], 
+        d.Cabinet AS [Cabinet],
+        d.Experience AS [Experience],
+        d.Phone AS [Phone],
+        d.Working AS [Working],
+        d.Vacation AS [Vacation],
+        d.Login AS [Login],
+        d.Password AS [Password],
+        spec.Name AS [SpecializationName]
+         FROM [Врач] d LEFT JOIN [Специальность] spec ON d.ID_specialization = spec.ID_specialization WHERE Login = @Login",
                 new { Login = login }
             );
 

@@ -16,8 +16,8 @@
             <!-- Строка для таблицы (занимает все свободное место) -->
             <RowDefinition />
             <!-- Строка для кнопок -->
-            <RowDefinition Height="44" />
-            <RowDefinition Height="34.72"/>
+            <RowDefinition Height="76" />
+            <RowDefinition Height="2.72"/>
         </Grid.RowDefinitions>
 
         <!-- Заголовок -->
@@ -27,7 +27,7 @@
            FontSize="16" FontWeight="Bold" Width="232"/>
 
         <!-- Таблица (убрали RowSpan) -->
-        <DataGrid d:ItemsSource="{d:SampleData ItemCount=5}" 
+        <DataGrid x:Name="dataGridMyPacHistory" 
               Grid.Row="1" 
               Margin="10,10,10,10"/>
 
@@ -51,8 +51,6 @@
                 Margin="5"/>
 
         </StackPanel>
-        <Label Grid.Row="3" Margin="0,5,0,0" HorizontalAlignment="Center" 
-FontSize="16" FontWeight="Bold" Width="232">Предстоящий приём</Label>
-        <Button Content="Осуществить приём" HorizontalAlignment="Right" Grid.Row="2" VerticalAlignment="Top" Height="24" Margin="0,15,20,0" Width="106"/>
+        <Button Content="Осуществить приём" HorizontalAlignment="Left" Grid.Row="2" VerticalAlignment="Center" Height="24" Margin="611,0,0,0" Width="129"/>
     </Grid>
 </Page>

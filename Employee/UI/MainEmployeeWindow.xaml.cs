@@ -11,6 +11,7 @@ using System.Windows.Input;
 using System.Windows.Media;
 using System.Windows.Media.Imaging;
 using System.Windows.Shapes;
+using WPF_POLYCLINIC_DB_CourseWork.Employee.Logic;
 using WPF_POLYCLINIC_DB_CourseWork.GeneralForms;
 using WPF_POLYCLINIC_DB_CourseWork.Models;
 using WPF_POLYCLINIC_DB_CourseWork.Pacient.Logic;
@@ -22,8 +23,15 @@ namespace WPF_POLYCLINIC_DB_CourseWork.Employee.UI
     /// </summary>
     public partial class MainEmployeeWindow : Window
     {
-        EmployeeMyPacHistory employeeMyPacHistory = new EmployeeMyPacHistory();
+        static Patient currentPacient = null;
+        static EmployeeReport employeeReport = new EmployeeReport();
+        static EmployeeService employeeService = new EmployeeService();
+        static EmployeeMyPacHistory employeeMyPacHistory = new EmployeeMyPacHistory(employeeReport, employeeService, ref currentPacient);
+        static EmployeeMyPac employeeMyPac = new EmployeeMyPac(employeeReport, employeeService);
+        static EmployeePrescriptoinPage employeePrescriptoinPage = new EmployeePrescriptoinPage(employeeReport, employeeService);
+        
         Doctor currentDoctor = null;
+        
         public MainEmployeeWindow()
         {
             InitializeComponent();
@@ -32,13 +40,22 @@ namespace WPF_POLYCLINIC_DB_CourseWork.Employee.UI
         public void AuthPacient(Doctor doctor)
         {
             currentDoctor = doctor;
-            //txtPatientFio.Text = $"Пациент: {currentPacient.FirstName} {currentPacient.SurName}";
+            txtDoctorfio.Text = $"Врач: {currentDoctor.FirstName} {currentDoctor.SurName}";
+            txtDoctorSpec.Text = $"Специальность: {currentDoctor.SpecializationName}";
             //txtNextAppointment.Text = pacientReport.GetNextAppointmentString(patient.ID_pacient);
             //pacientHistoryPage.UpdateData(patient.ID_pacient);
         }
 
         private void buttonPrescription_Click(object sender, RoutedEventArgs e)
         {
+            if (currentPacient != null)
+            {
+                employeeMyPacHistory.UpdateData(currentDoctor.ID_doctor, currentPacient.ID_pacient);
+            }
+            else
+            {
+                employeeMyPacHistory.UpdateData(currentDoctor.ID_doctor);
+            }
             framePages.Navigate(employeeMyPacHistory);
         }
 
@@ -46,6 +63,25 @@ namespace WPF_POLYCLINIC_DB_CourseWork.Employee.UI
         {
             AboutBox about = new AboutBox();
             about.Show();
+        }
+
+        private void buttonDiagnosis_Click(object sender, RoutedEventArgs e)
+        {
+            if (currentPacient != null)
+            {
+                employeePrescriptoinPage.UpdateData(currentDoctor.ID_doctor, currentPacient.ID_pacient);
+            }
+            else
+            {
+                employeePrescriptoinPage.UpdateData(currentDoctor.ID_doctor);
+            }
+            framePages.Navigate(employeePrescriptoinPage);
+        }
+
+        private void buttonMyPacients_Click(object sender, RoutedEventArgs e)
+        {
+            employeeMyPac.UpdateData(currentDoctor.ID_doctor);            
+            framePages.Navigate(employeeMyPac);
         }
     }
 }

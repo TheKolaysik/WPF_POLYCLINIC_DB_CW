@@ -67,7 +67,7 @@ namespace WPF_POLYCLINIC_DB_CourseWork
                 Doctor currentDoctor = employeeService.AuthenticateEmployee(login.Text.Trim(), password.Text.Trim());
                 this.Hide();
                 mainEmployeeWindow.AuthPacient(currentDoctor);
-                mainPacientWindow.ShowDialog();
+                mainEmployeeWindow.ShowDialog();
             }
             catch (Exception ex)
             {

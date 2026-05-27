@@ -24,10 +24,25 @@ namespace WPF_POLYCLINIC_DB_CourseWork.Pacient.Logic
         {
             connection.Open();
             DataTable dt = new DataTable();
-            adapter = new SqlDataAdapter(@"SELECT d.ID_doctor, d.FirstName, d.SurName, COUNT(p.NumberPolicy) AS Количество_пациентов FROM [Врач] d
-                                            LEFT JOIN[Специальность] spec ON d.ID_specialization = spec.ID_specialization
-                                            LEFT JOIN[Пациент] p ON p.DistrictDoctor = d.ID_doctor
-                                            GROUP BY d.FirstName, d.SurName, d.ID_doctor", connection);
+            adapter = new SqlDataAdapter(@"SELECT 
+                d.ID_doctor AS [ID], 
+                d.FirstName AS [Имя], 
+                d.SurName AS [Фамилия], 
+                spec.Name AS [Специальность], 
+                COUNT(p.NumberPolicy) AS [Количество_пациентов], 
+                d.Experience AS [Стаж], 
+                d.Cabinet AS [Кабинет] 
+            FROM [Врач] d
+            LEFT JOIN [Специальность] spec ON d.ID_specialization = spec.ID_specialization
+            LEFT JOIN [Пациент] p ON p.DistrictDoctor = d.ID_doctor
+            WHERE d.Working = '1' AND d.Vacation = '0'
+            GROUP BY 
+                d.ID_doctor, 
+                d.FirstName, 
+                d.SurName, 
+                spec.Name, 
+                d.Experience, 
+                d.Cabinet;", connection);
             adapter.Fill(dt);
             dataGridView.DataSource = dt;
             connection.Close();
@@ -203,7 +218,6 @@ namespace WPF_POLYCLINIC_DB_CourseWork.Pacient.Logic
 
         private void LoadPrescriptionDetails(long prescriptionId, System.Windows.Forms.TextBox txtInstruction, DataGridView dataGrid)
         {
-            // В первом запросе убрана лишняя запятая перед FROM и добавлен выбор инструкции
             string sqlInstruction = @"
         SELECT TOP 1
             [IssueDate],
@@ -218,7 +232,6 @@ namespace WPF_POLYCLINIC_DB_CourseWork.Pacient.Logic
             [MedicamentID] AS [ID],
             [MedicamentName] AS [Название лекарства],
             [IssueDate] AS [Дата выдачи],
-            [Dosage] AS [Дозировка] -- Поле дозировки из представления
         FROM [View_FullPrescriptionDetails]
         WHERE [PrescriptionID] = @Id";
 
@@ -227,8 +240,6 @@ namespace WPF_POLYCLINIC_DB_CourseWork.Pacient.Logic
             {
                 try
                 {
-                    // 1. Получаем общую информацию (Инструкцию, имена и т.д.)
-                    // Используем dynamic, чтобы быстро прочитать свойства без создания лишних классов-моделей
                     var headerInfo = conn.QueryFirstOrDefault<dynamic>(sqlInstruction, new { Id = prescriptionId });
 
                     if (headerInfo != null)
@@ -238,8 +249,6 @@ namespace WPF_POLYCLINIC_DB_CourseWork.Pacient.Logic
                         
                     }
 
-                    // 2. Получаем список лекарств для таблицы
-                    // Dapper возвращает IEnumerable, .ToList() превращает его в понятный для WinForms список
                     var medicamentsList = conn.Query(sqlMedicaments, new { Id = prescriptionId }).ToList();
 
                     // Привязываем результат напрямую к DataGridView

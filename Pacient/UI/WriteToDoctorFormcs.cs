@@ -21,8 +21,25 @@ namespace WPF_POLYCLINIC_DB_CourseWork.Pacient.UI
         {
 
         }
-
+         // Записаться
         private void button1_Click(object sender, EventArgs e)
+        {
+
+        }
+
+        private void label3_Click(object sender, EventArgs e)
+        {
+
+        }
+        
+        // Выбрать
+        private void button2_Click(object sender, EventArgs e)
+        {
+
+        }
+
+        // Отменить
+        private void button3_Click(object sender, EventArgs e)
         {
 
         }

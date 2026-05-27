@@ -5,7 +5,7 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:WPF_POLYCLINIC_DB_CourseWork.Employee.UI"
         mc:Ignorable="d"
-        Title="MainEmployeeWindow" Height="450" Width="800">
+        Title="MainEmployeeWindow" Height="450" Width="800" MinWidth="940" MinHeight="540">
     <Grid RenderTransformOrigin="0.5,0.5">
         <Grid.Background>
             <LinearGradientBrush EndPoint="0.5,1" StartPoint="0.5,0">
@@ -52,7 +52,7 @@
             </Border.Background>
             <Grid Margin="10, 0, 10, 0">
                 <StackPanel Grid.Row="1" Margin="0,20,0, 0" VerticalAlignment="Top" Cursor="Hand">
-                    <Button x:Name="buttonMyPacients" Content="Мои пациенты" Height="30" Margin="0,5"  Foreground="WhiteSmoke" FontFamily="Segoe UI Black" >
+                    <Button x:Name="buttonMyPacients" Content="Мои пациенты" Height="30" Margin="0,5"  Foreground="WhiteSmoke" FontFamily="Segoe UI Black" Click="buttonMyPacients_Click" >
                         <Button.Background>
                             <SolidColorBrush Color="#FF665959"/>
                         </Button.Background>
@@ -63,7 +63,7 @@
 
                         </Button.Resources>
                     </Button>
-                    <Button x:Name="buttonDiagnosis" Content="Выписанные рецепты" Height="30" Margin="0,5" FontFamily="Segoe UI Black" Foreground="WhiteSmoke" >
+                    <Button x:Name="buttonDiagnosis" Content="Выписанные рецепты" Height="30" Margin="0,5" FontFamily="Segoe UI Black" Foreground="WhiteSmoke" Click="buttonDiagnosis_Click" >
                         <Button.Background>
                             <SolidColorBrush Color="#FF665959"/>
                         </Button.Background>
@@ -141,15 +141,15 @@
             </StatusBar.ItemsPanel>
 
             <StatusBarItem Grid.Column="0" Margin="10,0">
-                <TextBlock Foreground="White" VerticalAlignment="Center" Text="Роль: Врач" />
+                <TextBlock x:Name="txtDoctorSpec" Foreground="White" VerticalAlignment="Center" Text="Роль: Врач" />
             </StatusBarItem>
 
             <StatusBarItem Grid.Column="1" HorizontalAlignment="Center">
-                <TextBlock Foreground="White" VerticalAlignment="Center" Text="ФИО: Иванов И.И." />
+                <TextBlock x:Name="txtDoctorfio" Foreground="White" VerticalAlignment="Center" Text="ФИО: Иванов И.И." />
             </StatusBarItem>
 
             <StatusBarItem Grid.Column="2" Margin="10,0">
-                <TextBlock Foreground="White" VerticalAlignment="Center" Text="Пациент: Петров П.П." />
+                <TextBlock x:Name="txtPacientfio" Foreground="White" VerticalAlignment="Center" Text="" />
             </StatusBarItem>
         </StatusBar>
     </Grid>

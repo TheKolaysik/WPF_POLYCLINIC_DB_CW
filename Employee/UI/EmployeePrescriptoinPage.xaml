@@ -15,24 +15,24 @@
             <!-- Строка для таблицы (занимает все свободное место) -->
             <RowDefinition />
             <!-- Строка для кнопок -->
-            <RowDefinition Height="44" />
-            <RowDefinition Height="34.72"/>
+            <RowDefinition Height="78.72" />
+            <RowDefinition Height="0"/>
         </Grid.RowDefinitions>
 
         <!-- Заголовок -->
-        <Label Content="История приемов и записей" 
+        <Label Content="Выписанные рецепты" 
            Grid.Row="0" 
            HorizontalAlignment="Center" 
            FontSize="16" FontWeight="Bold" Width="232"/>
 
         <!-- Таблица (убрали RowSpan) -->
-        <DataGrid d:ItemsSource="{d:SampleData ItemCount=5}" 
+        <DataGrid x:Name="dataGridPrescriptions" 
               Grid.Row="1" 
               Margin="10,10,10,10"/>
 
         <!-- Контейнер для кнопки и комбобокса -->
-        <Label Grid.Row="3" Margin="0,5,0,0" HorizontalAlignment="Center" 
+        <Label Grid.Row="3" Margin="0,5,0,-5" HorizontalAlignment="Center" 
 FontSize="16" FontWeight="Bold" Width="232"></Label>
-        <Button Content="Назначить лечение и выписать рецепт" HorizontalAlignment="Right" Grid.Row="2" VerticalAlignment="Top" Height="24" Margin="0,15,20,0" Width="250"/>
+        <Button x:Name="buttonPrescription" Content="Назначить лечение и выписать рецепт" HorizontalAlignment="Right" Grid.Row="2" VerticalAlignment="Top" Height="24" Margin="0,15,20,0" Width="250" Click="buttonPrescription_Click"/>
     </Grid>
 </Page>

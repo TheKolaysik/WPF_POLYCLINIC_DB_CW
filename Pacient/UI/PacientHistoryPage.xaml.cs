@@ -44,10 +44,10 @@ namespace WPF_POLYCLINIC_DB_CourseWork.Employee.UI
                     status = new List<string>() { "Завершённый" };
                     break;
                 case 1:
-                    status = new List<string>() { "Предстоящий" };
+                    status = new List<string>() { "Предстоящий", "Плановый" };
                     break;
                 case 2:
-                    status = new List<string>() { "Завершённый", "Предстоящий" };
+                    status = new List<string>() { "Завершённый", "Предстоящий", "Плановый" };
                     break;
                 default:
                     break;

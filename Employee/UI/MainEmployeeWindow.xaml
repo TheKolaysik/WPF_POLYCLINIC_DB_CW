@@ -5,129 +5,138 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:WPF_POLYCLINIC_DB_CourseWork.Employee.UI"
         mc:Ignorable="d"
-        Title="MainEmployeeWindow" Height="450" Width="800" MinWidth="940" MinHeight="540">
-    <Grid RenderTransformOrigin="0.5,0.5">
-        <Grid.Background>
-            <LinearGradientBrush EndPoint="0.5,1" StartPoint="0.5,0">
-                <LinearGradientBrush.RelativeTransform>
-                    <TransformGroup>
-                        <ScaleTransform CenterY="0.5" CenterX="0.5"/>
-                        <SkewTransform CenterX="0.5" CenterY="0.5"/>
-                        <RotateTransform Angle="90" CenterX="0.5" CenterY="0.5"/>
-                        <TranslateTransform/>
-                    </TransformGroup>
-                </LinearGradientBrush.RelativeTransform>
-                <GradientStop Color="#FFFA79D5"/>
-                <GradientStop Color="#FFCBED6C" Offset="1"/>
-            </LinearGradientBrush>
-        </Grid.Background>
+        Title="Карточка Врача" Height="540" Width="940" MinWidth="940" MinHeight="540" WindowStartupLocation="CenterScreen">
+
+    <Grid>
         <Grid.ColumnDefinitions>
-            <ColumnDefinition Width="0"/>
             <ColumnDefinition Width="200"/>
-            <!-- Sidebar -->
             <ColumnDefinition Width="*"/>
-            <!-- Main content -->
         </Grid.ColumnDefinitions>
+
         <Grid.RowDefinitions>
             <RowDefinition Height="*"/>
-            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="30"/>
         </Grid.RowDefinitions>
 
-        <!-- Sidebar -->
-        <Border Grid.Row="0" Grid.Column="0" BorderThickness="0,0,0,0" CornerRadius="0,20,20,0" Grid.ColumnSpan="2">
+        <Border Grid.Row="0" Grid.Column="0" CornerRadius="0,20,20,0">
             <Border.Background>
-                <LinearGradientBrush EndPoint="0.5,1" StartPoint="0.5,0" MappingMode="RelativeToBoundingBox" SpreadMethod="Pad">
+                <LinearGradientBrush EndPoint="0.5,1" StartPoint="0.5,0">
                     <LinearGradientBrush.RelativeTransform>
                         <TransformGroup>
-                            <ScaleTransform CenterY="0.5" CenterX="0.5"/>
-                            <SkewTransform CenterX="0.5" CenterY="0.5"/>
                             <RotateTransform Angle="136" CenterX="0.5" CenterY="0.5"/>
-                            <TranslateTransform/>
                         </TransformGroup>
                     </LinearGradientBrush.RelativeTransform>
-                    <GradientStop Color="#FFEE15DA"/>
-                    <GradientStop Color="#FF008CFF" Offset="1"/>
+                    <GradientStop Color="#FFEE15DA" Offset="0"/>
                     <GradientStop Color="#FF0497C4" Offset="0.635"/>
+                    <GradientStop Color="#FF008CFF" Offset="1"/>
                 </LinearGradientBrush>
             </Border.Background>
-            <Grid Margin="10, 0, 10, 0">
-                <StackPanel Grid.Row="1" Margin="0,20,0, 0" VerticalAlignment="Top" Cursor="Hand">
-                    <Button x:Name="buttonMyPacients" Content="Мои пациенты" Height="30" Margin="0,5"  Foreground="WhiteSmoke" FontFamily="Segoe UI Black" Click="buttonMyPacients_Click" >
-                        <Button.Background>
-                            <SolidColorBrush Color="#FF665959"/>
-                        </Button.Background>
-                        <Button.Resources>
-                            <Style TargetType="Border">
-                                <Setter Property="CornerRadius" Value="5"/>
-                            </Style>
 
-                        </Button.Resources>
-                    </Button>
-                    <Button x:Name="buttonDiagnosis" Content="Выписанные рецепты" Height="30" Margin="0,5" FontFamily="Segoe UI Black" Foreground="WhiteSmoke" Click="buttonDiagnosis_Click" >
-                        <Button.Background>
-                            <SolidColorBrush Color="#FF665959"/>
-                        </Button.Background>
-                        <Button.Resources>
-                            <Style TargetType="Border">
-                                <Setter Property="CornerRadius" Value="5"/>
-                            </Style>
-                        </Button.Resources>
-                    </Button>
-                    <Button x:Name="buttonЬнHistory" Content="История приёмов" Height="30" Margin="0,5" FontFamily="Segoe UI Black" Foreground="WhiteSmoke" Click="buttonPrescription_Click" >
-                        <Button.Background>
-                            <SolidColorBrush Color="#FF665959"/>
-                        </Button.Background>
-                        <Button.Resources>
-                            <Style TargetType="Border">
-                                <Setter Property="CornerRadius" Value="5"/>
-                            </Style>
-                        </Button.Resources>
-                    </Button>
+            <Grid Margin="15,20,15,20">
+                <Grid.RowDefinitions>
+                    <RowDefinition Height="Auto"/>
+                    <RowDefinition Height="*"/>
+                    <RowDefinition Height="Auto"/>
+                </Grid.RowDefinitions>
 
-                </StackPanel>
-                <StackPanel Grid.Row="2" VerticalAlignment="Center" Cursor="Hand">
-                    <Button x:Name="buttonExportExcel" Content="Экспорт в Excel" Height="30" Margin="0,5" FontFamily="Segoe UI Black" Foreground="WhiteSmoke" >
-                        <Button.Background>
-                            <SolidColorBrush Color="#FF665959"/>
-                        </Button.Background>
+                <StackPanel Grid.Row="0" VerticalAlignment="Top">
+                    <StackPanel.Resources>
+                        <Style TargetType="Button">
+                            <Setter Property="Height" Value="32"/>
+                            <Setter Property="Margin" Value="0,4"/>
+                            <Setter Property="Foreground" Value="WhiteSmoke"/>
+                            <Setter Property="FontFamily" Value="Segoe UI Semibold"/>
+                            <Setter Property="Background" Value="#FF665959"/>
+                            <Setter Property="Cursor" Value="Hand"/>
+                        </Style>
+                        <Style TargetType="Border">
+                            <Setter Property="CornerRadius" Value="6"/>
+                        </Style>
+                    </StackPanel.Resources>
+
+                    <Button x:Name="buttonMyPacients" Content="Мои пациенты" Click="buttonMyPacients_Click">
                         <Button.Resources>
                             <Style TargetType="Border">
-                                <Setter Property="CornerRadius" Value="5"/>
+                                <Setter Property="CornerRadius" Value="6"/>
                             </Style>
                         </Button.Resources>
                     </Button>
-                    <Button x:Name="buttonExportWord" Content="Экспорт в Word" Height="30" Margin="0,5" FontFamily="Segoe UI Black" Foreground="WhiteSmoke" >
-                        <Button.Background>
-                            <SolidColorBrush Color="#FF665959"/>
-                        </Button.Background>
+                    <Button x:Name="buttonDiagnosis" Content="Выписанные рецепты" Click="buttonDiagnosis_Click">
                         <Button.Resources>
                             <Style TargetType="Border">
-                                <Setter Property="CornerRadius" Value="5"/>
+                                <Setter Property="CornerRadius" Value="6"/>
+                            </Style>
+                        </Button.Resources>
+                    </Button>
+                    <Button x:Name="buttonHistory" Content="История приёмов" Click="buttonPrescription_Click">
+                        <Button.Resources>
+                            <Style TargetType="Border">
+                                <Setter Property="CornerRadius" Value="6"/>
                             </Style>
                         </Button.Resources>
                     </Button>
                 </StackPanel>
-                <Button Content="О программе" Height="30" VerticalAlignment="Bottom" Margin="0,0,0,40" Cursor="Hand" FontFamily="Segoe UI Black" Foreground="WhiteSmoke" Click="Button_Click" >
-                    <Button.Background>
-                        <SolidColorBrush Color="#FF665959"/>
-                    </Button.Background>
+
+                <StackPanel Grid.Row="1" VerticalAlignment="Center">
+                    <StackPanel.Resources>
+                        <Style TargetType="Button">
+                            <Setter Property="Height" Value="32"/>
+                            <Setter Property="Margin" Value="0,4"/>
+                            <Setter Property="Foreground" Value="WhiteSmoke"/>
+                            <Setter Property="FontFamily" Value="Segoe UI Semibold"/>
+                            <Setter Property="Background" Value="#FF665959"/>
+                            <Setter Property="Cursor" Value="Hand"/>
+                        </Style>
+                        <Style TargetType="Border">
+                            <Setter Property="CornerRadius" Value="6"/>
+                        </Style>
+                    </StackPanel.Resources>
+
+                    <Button x:Name="buttonExportExcel" Content="Экспорт в Excel">
+                        <Button.Resources>
+                            <Style TargetType="Border">
+                                <Setter Property="CornerRadius" Value="6"/>
+                            </Style>
+                        </Button.Resources>
+                    </Button>
+                    <Button x:Name="buttonExportWord" Content="Экспорт в Word">
+                        <Button.Resources>
+                            <Style TargetType="Border">
+                                <Setter Property="CornerRadius" Value="6"/>
+                            </Style>
+                        </Button.Resources>
+                    </Button>
+                </StackPanel>
+
+                <Button Grid.Row="2" Content="О программе" Height="32" VerticalAlignment="Bottom" 
+                        FontFamily="Segoe UI Semibold" Foreground="WhiteSmoke" Background="#FF665959" Cursor="Hand" Click="Button_Click">
                     <Button.Resources>
                         <Style TargetType="Border">
-                            <Setter Property="CornerRadius" Value="5"/>
+                            <Setter Property="CornerRadius" Value="6"/>
                         </Style>
                     </Button.Resources>
                 </Button>
             </Grid>
         </Border>
 
-        <!-- Main content -->
-        <Border Grid.Row="0" Grid.Column="2">
+        <Border Grid.Row="0" Grid.Column="1">
+            <Border.Background>
+                <LinearGradientBrush EndPoint="0.5,1" StartPoint="0.5,0">
+                    <LinearGradientBrush.RelativeTransform>
+                        <TransformGroup>
+                            <RotateTransform Angle="90" CenterX="0.5" CenterY="0.5"/>
+                        </TransformGroup>
+                    </LinearGradientBrush.RelativeTransform>
+                    <GradientStop Color="#FFFA79D5" Offset="0"/>
+                    <GradientStop Color="#FFCBED6C" Offset="1"/>
+                </LinearGradientBrush>
+            </Border.Background>
             <Grid>
                 <Frame NavigationUIVisibility="Hidden" x:Name="framePages"/>
             </Grid>
         </Border>
 
-        <StatusBar Grid.Row="1" Grid.ColumnSpan="3" Height="30" Background="#FF333333">
+        <StatusBar Grid.Row="1" Grid.Column="0" Grid.ColumnSpan="2" Height="30" Background="#FF333333">
             <StatusBar.ItemsPanel>
                 <ItemsPanelTemplate>
                     <Grid>
@@ -140,7 +149,7 @@
                 </ItemsPanelTemplate>
             </StatusBar.ItemsPanel>
 
-            <StatusBarItem Grid.Column="0" Margin="10,0">
+            <StatusBarItem Grid.Column="0" Margin="15,0">
                 <TextBlock x:Name="txtDoctorSpec" Foreground="White" VerticalAlignment="Center" Text="Роль: Врач" />
             </StatusBarItem>
 
@@ -148,7 +157,7 @@
                 <TextBlock x:Name="txtDoctorfio" Foreground="White" VerticalAlignment="Center" Text="ФИО: Иванов И.И." />
             </StatusBarItem>
 
-            <StatusBarItem Grid.Column="2" Margin="10,0">
+            <StatusBarItem Grid.Column="2" Margin="15,0">
                 <TextBlock x:Name="txtPacientfio" Foreground="White" VerticalAlignment="Center" Text="" />
             </StatusBarItem>
         </StatusBar>

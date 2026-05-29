@@ -24,9 +24,33 @@ namespace WPF_POLYCLINIC_DB_CourseWork.Employee.UI
     public partial class MainEmployeeWindow : Window
     {
         static Patient currentPacient = null;
+        static HistoryRecord historyRecord = null;
         static EmployeeReport employeeReport = new EmployeeReport();
         static EmployeeService employeeService = new EmployeeService();
-        static EmployeeMyPacHistory employeeMyPacHistory = new EmployeeMyPacHistory(employeeReport, employeeService, ref currentPacient);
+        static EmployeeMyPacHistory employeeMyPacHistory = new EmployeeMyPacHistory(
+            employeeReport,
+            employeeService,
+            currentPacient, historyRecord,
+            (newPatient) =>
+            {
+                currentPacient = newPatient;
+
+                // Находим активное окно приложения, чтобы получить доступ к элементам UI
+                var mainWindow = Application.Current.Windows.OfType<MainEmployeeWindow>().FirstOrDefault();
+                if (mainWindow != null)
+                {
+                    if (currentPacient != null)
+                    {
+                        // Выводим ФИО выбранного пациента в StatusBar
+                        mainWindow.txtPacientfio.Text = $"Пациент: {currentPacient.FirstName} {currentPacient.SurName}";
+                    }
+                    else
+                    {
+                        mainWindow.txtPacientfio.Text = "Пациент не выбран";
+                    }
+                }
+            }, (newHistory) => { historyRecord = newHistory; } 
+        );
         static EmployeeMyPac employeeMyPac = new EmployeeMyPac(employeeReport, employeeService);
         static EmployeePrescriptoinPage employeePrescriptoinPage = new EmployeePrescriptoinPage(employeeReport, employeeService);
         
@@ -35,6 +59,7 @@ namespace WPF_POLYCLINIC_DB_CourseWork.Employee.UI
         public MainEmployeeWindow()
         {
             InitializeComponent();
+            txtPacientfio.Text = "Пациент не выбран";
         }
 
         public void AuthPacient(Doctor doctor)
@@ -48,15 +73,16 @@ namespace WPF_POLYCLINIC_DB_CourseWork.Employee.UI
 
         private void buttonPrescription_Click(object sender, RoutedEventArgs e)
         {
+            
+            framePages.Navigate(employeeMyPacHistory);
             if (currentPacient != null)
             {
                 employeeMyPacHistory.UpdateData(currentDoctor.ID_doctor, currentPacient.ID_pacient);
             }
             else
             {
-                employeeMyPacHistory.UpdateData(currentDoctor.ID_doctor);
+                employeeMyPacHistory.UpdateData(currentDoctor.ID_doctor);                
             }
-            framePages.Navigate(employeeMyPacHistory);
         }
 
         private void Button_Click(object sender, RoutedEventArgs e)
@@ -67,15 +93,15 @@ namespace WPF_POLYCLINIC_DB_CourseWork.Employee.UI
 
         private void buttonDiagnosis_Click(object sender, RoutedEventArgs e)
         {
+            framePages.Navigate(employeePrescriptoinPage);
             if (currentPacient != null)
             {
-                employeePrescriptoinPage.UpdateData(currentDoctor.ID_doctor, currentPacient.ID_pacient);
+                employeePrescriptoinPage.UpdateData(currentDoctor.ID_doctor, currentPacient.ID_pacient, historyRecord.ID_history);
             }
             else
             {
                 employeePrescriptoinPage.UpdateData(currentDoctor.ID_doctor);
             }
-            framePages.Navigate(employeePrescriptoinPage);
         }
 
         private void buttonMyPacients_Click(object sender, RoutedEventArgs e)

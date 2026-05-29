@@ -1,5 +1,6 @@
 ﻿using Dapper;
 using System;
+using System.Collections;
 using System.Collections.Generic;
 using System.Configuration;
 using System.Data;
@@ -10,6 +11,7 @@ using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Controls;
 using System.Windows.Forms;
+using WPF_POLYCLINIC_DB_CourseWork.Models;
 
 namespace WPF_POLYCLINIC_DB_CourseWork.Pacient.Logic
 {
@@ -52,7 +54,6 @@ namespace WPF_POLYCLINIC_DB_CourseWork.Pacient.Logic
 
             string sqlExpression = "SELECT COUNT(ID_pacient) FROM Пациент WHERE Login = @login";
             cmd = new SqlCommand(sqlExpression, connection);
-            // Используем параметры для защиты от SQL-инъекций
             cmd.Parameters.AddWithValue("@login", login);
 
             connection.Open();
@@ -67,7 +68,6 @@ namespace WPF_POLYCLINIC_DB_CourseWork.Pacient.Logic
 
             string sqlExpression = "SELECT COUNT(ID_pacient) FROM Пациент WHERE NumberPolicy = @policy";
             cmd = new SqlCommand(sqlExpression, connection);
-            // Используем параметры для защиты от SQL-инъекций
             cmd.Parameters.AddWithValue("@policy", password);
 
             connection.Open();
@@ -183,8 +183,7 @@ namespace WPF_POLYCLINIC_DB_CourseWork.Pacient.Logic
                 h.Date,
                 (d.SurName + ' ' + d.FirstName) AS DoctorName,
                 s.Name AS SpecializationName,
-                d.Cabinet AS Cabinet,
-                h.Type
+                d.Cabinet AS Cabinet
             FROM [История] h
             INNER JOIN [Врач] d ON h.ID_doctor = d.ID_doctor
             INNER JOIN [Специальность] s ON d.ID_specialization = s.ID_specialization
@@ -196,18 +195,18 @@ namespace WPF_POLYCLINIC_DB_CourseWork.Pacient.Logic
             cmd.Parameters.Add("@IdPacient", SqlDbType.BigInt).Value = idPacient;
 
             connection.Open();
-
-            // Используем SqlDataReader для чтения одной строки
             using (SqlDataReader reader = cmd.ExecuteReader())
             {
-                if (reader.Read()) // Если запись найдена
+                if (reader.Read()) 
                 {
-                    DateTime appointmentDate = reader.GetDateTime(0);
-                    string doctor = reader.GetString(1);
-                    string specialization = reader.GetString(2);
-                    string cabinet = reader.GetString(3);
-                    string type = reader.GetString(4);
-                    result = $"Ближайший прием: {appointmentDate:dd.MM.yyyy в HH:mm} | {doctor} ({specialization} | Кабинет: {cabinet} | {type})";
+                    DateTime appointmentDate = reader["Date"] != DBNull.Value
+                            ? Convert.ToDateTime(reader["Date"])
+                            : DateTime.MinValue;
+
+                    string doctor = reader["DoctorName"]?.ToString() ?? "Не указан";
+                    string specialization = reader["SpecializationName"]?.ToString() ?? "Не указана";
+                    string cabinet = reader["Cabinet"]?.ToString() ?? "—";
+                    result = $"Ближайший прием: {appointmentDate:dd.MM.yyyy в HH:mm} | {doctor} ({specialization} | Кабинет: {cabinet})";
                 }
             }
 
@@ -216,49 +215,87 @@ namespace WPF_POLYCLINIC_DB_CourseWork.Pacient.Logic
             return result;
         }
 
-        private void LoadPrescriptionDetails(long prescriptionId, System.Windows.Forms.TextBox txtInstruction, DataGridView dataGrid)
+        public void LoadPrescriptionDetails(long prescriptionId, System.Windows.Forms.TextBox txtInstruction, DataGridView dataGrid)
         {
             string sqlInstruction = @"
-        SELECT TOP 1
-            [IssueDate],
-            [Instruction],
-            [PatientName],
+        SELECT TOP 1 
+            [IssueDate], 
+            [Instruction], 
+            [PatientName], 
             [DoctorName]
-        FROM [View_FullPrescriptionDetails] 
+        FROM [View_PatientPrescriptions] 
         WHERE [PrescriptionID] = @Id";
 
             string sqlMedicaments = @"
         SELECT 
-            [MedicamentID] AS [ID],
             [MedicamentName] AS [Название лекарства],
-            [IssueDate] AS [Дата выдачи],
+            [MethodOfApplication] AS [Способ применения],
+            [SideEffects] AS [Подочные эффекты],
+            [Manufacturer] AS [Производитель]
         FROM [View_FullPrescriptionDetails]
         WHERE [PrescriptionID] = @Id";
 
-            // Оборачиваем подключение в using, чтобы оно автоматически закрывалось (connection.Close() больше не нужен)
-            using (var conn = new SqlConnection(connection.ConnectionString))
+            using (SqlConnection conn = new SqlConnection(connection.ConnectionString))
             {
                 try
                 {
-                    var headerInfo = conn.QueryFirstOrDefault<dynamic>(sqlInstruction, new { Id = prescriptionId });
-
-                    if (headerInfo != null)
+                    conn.Open();
+                    using (SqlCommand cmdInstruction = new SqlCommand(sqlInstruction, conn))
                     {
-                        txtInstruction.Text = headerInfo.Instruction?.ToString();
+                        cmdInstruction.Parameters.Add("@Id", SqlDbType.BigInt).Value = prescriptionId;
 
-                        
+                        using (SqlDataReader reader = cmdInstruction.ExecuteReader())
+                        {
+                            if (reader.Read()) 
+                            {                                
+                                txtInstruction.Text = reader["Instruction"] != DBNull.Value
+                                    ? reader["Instruction"].ToString()
+                                    : string.Empty;
+                            }
+                        } 
                     }
 
-                    var medicamentsList = conn.Query(sqlMedicaments, new { Id = prescriptionId }).ToList();
 
-                    // Привязываем результат напрямую к DataGridView
-                    dataGrid.DataSource = medicamentsList;
+                    using (SqlCommand cmdMedicaments = new SqlCommand(sqlMedicaments, conn))
+                    {
+                        cmdMedicaments.Parameters.Add("@Id", SqlDbType.BigInt).Value = prescriptionId;
+
+                        using (SqlDataAdapter adapter = new SqlDataAdapter(cmdMedicaments))
+                        {
+                            DataTable dt = new DataTable();
+                            adapter.Fill(dt); 
+                            dataGrid.DataSource = dt;
+                        }
+                    }
                 }
                 catch (Exception ex)
                 {
-                    MessageBox.Show($"Ошибка загрузки данных через Dapper: {ex.Message}", "Ошибка", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                    MessageBox.Show($"Ошибка загрузки данных: {ex.Message}", "Ошибка", MessageBoxButtons.OK, MessageBoxIcon.Error);
                 }
             }
+        }
+        public Doctor GetOneEmployee(long id)
+        {
+
+            // Получаем врача по ID
+            var doctor = connection.QueryFirstOrDefault<Doctor>(
+                @"SELECT d.ID_doctor AS [ID_doctor], 
+        d.FirstName AS [FirstName], 
+        d.SurName AS [SurName], 
+        d.Cabinet AS [Cabinet],
+        d.Experience AS [Experience],
+        d.Phone AS [Phone],
+        d.Working AS [Working],
+        d.Vacation AS [Vacation],
+        d.Login AS [Login],
+        d.Password AS [Password],
+        spec.Name AS [SpecializationName]
+         FROM [Врач] d LEFT JOIN [Специальность] spec ON d.ID_specialization = spec.ID_specialization WHERE ID_doctor = @ID",
+                new { ID = id }
+            );
+
+            if (doctor == null) throw new Exception("Сотрудник с таким ID не существует!");
+            return doctor;
         }
     }
 }

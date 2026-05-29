@@ -56,7 +56,7 @@
             </ComboBox>
 
         </StackPanel>
-        <Button Content="Запись на приём" HorizontalAlignment="Right" Grid.Row="2" VerticalAlignment="Top" Height="24" Margin="0,32,10,0" Width="106"/>
+        <Button Content="Запись на приём" HorizontalAlignment="Right" Grid.Row="2" Margin="0,32,10,23" Width="106" Click="Button_Click_1"/>
         <StackPanel Grid.Row="2" 
             Orientation="Horizontal" 
             Margin="260,10,0,0" Width="232" HorizontalAlignment="Left">

@@ -29,28 +29,36 @@
         <!-- Таблица (убрали RowSpan) -->
         <DataGrid x:Name="dataGridMyPacHistory" 
               Grid.Row="1" 
-              Margin="10,10,10,10"/>
+              Margin="10,10,10,10"
+                CanUserAddRows="False"
+                CanUserDeleteRows="False"
+                CanUserResizeRows="False"
+                CanUserReorderColumns="False"
+                CanUserResizeColumns="True"
+                CanUserSortColumns="False"
+                AutoGenerateColumns="True" 
+                ColumnWidth="*"    />
 
         <!-- Контейнер для кнопки и комбобокса -->
         <StackPanel Grid.Row="2" 
                 Orientation="Horizontal" 
                 HorizontalAlignment="Left" 
-                Margin="20,10,0,0" Width="213">
+                Margin="20,10,0,0" Width="241">
 
-            <ComboBox Width="120" 
+            <ComboBox x:Name="statusFilter" Width="156" 
                   VerticalAlignment="Center" 
-                  Margin="5" Height="24">
+                  Margin="5" Height="24"
+                      SelectedIndex="1">
                 <sys:String>Прошлые приёмы</sys:String>
                 <sys:String>Актуальные приёмы</sys:String>
-                <sys:String>Предстоящие приёмы</sys:String>
+                <sys:String>Все приёмы</sys:String>
             </ComboBox>
-
             <Button Content="Выбрать" 
                 Width="68" 
-                Height="24" 
-                Margin="5"/>
+                Height="24" Click="Button_Click_1" 
+                />
 
         </StackPanel>
-        <Button Content="Осуществить приём" HorizontalAlignment="Left" Grid.Row="2" VerticalAlignment="Center" Height="24" Margin="611,0,0,0" Width="129"/>
+        <Button x:Name="button_INPUT" Content="Осуществить приём" HorizontalAlignment="Right" Grid.Row="2" VerticalAlignment="Top" Height="24" Margin="0,31,10,0" Width="129" Click="Button_Click"/>
     </Grid>
 </Page>

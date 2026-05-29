@@ -14,6 +14,7 @@ using System.Windows.Navigation;
 using System.Windows.Shapes;
 using WPF_POLYCLINIC_DB_CourseWork.Employee.Logic;
 using WPF_POLYCLINIC_DB_CourseWork.Pacient.Logic;
+using WPF_POLYCLINIC_DB_CourseWork.Pacient.UI;
 
 namespace WPF_POLYCLINIC_DB_CourseWork.Employee.UI
 {
@@ -77,6 +78,13 @@ namespace WPF_POLYCLINIC_DB_CourseWork.Employee.UI
         private void Button_Click(object sender, RoutedEventArgs e)
         {
             UpdateData(id);
+        }
+
+        // Запись на приём
+        private void Button_Click_1(object sender, RoutedEventArgs e)
+        {
+            var detailForm = new WriteToDoctorFormcs(id);
+            detailForm.ShowDialog();
         }
     }
 }

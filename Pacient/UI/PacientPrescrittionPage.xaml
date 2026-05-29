@@ -35,9 +35,16 @@
         CanUserReorderColumns="False"
         CanUserResizeColumns="True"
         CanUserSortColumns="False"
-        AutoGenerateColumns="True" 
-        ColumnWidth="*"    
-                  />
+        AutoGenerateColumns="True"
+        IsReadOnly="True"
+        ColumnWidth="*" >
+            <DataGrid.RowStyle>
+                <Style TargetType="DataGridRow">
+                    <EventSetter Event="MouseDoubleClick" Handler="Row_MouseDoubleClick"/>
+                </Style>
+            </DataGrid.RowStyle>
+        </DataGrid>   
+                  
 
         <!-- Контейнер для кнопки и комбобокса -->
     </Grid>

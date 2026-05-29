@@ -19,9 +19,6 @@ using WPF_POLYCLINIC_DB_CourseWork.Pacient.UI;
 
 namespace WPF_POLYCLINIC_DB_CourseWork.Employee.UI
 {
-    /// <summary>
-    /// Логика взаимодействия для PacientPrescrittionPage.xaml
-    /// </summary>
     public partial class PacientPrescrittionPage : Page
     {
         private PacientReport pacientReport;
@@ -44,14 +41,10 @@ namespace WPF_POLYCLINIC_DB_CourseWork.Employee.UI
             var row = sender as DataGridRow;
             if (row != null && row.Item is DataRowView rowView)
             {
-                // Достаем ID рецепта из кликнутой строки DataTable
-                // Имя "ID Рецепта" должно совпадать с тем, что вы указали в SQL-запросе через AS
                 long prescriptionId = Convert.ToInt64(rowView["ID Рецепта"]);
 
-                // Создаем и открываем окно Windows Forms, передавая туда ID
-                // (Убедитесь, что у вас подключена ссылка на System.Windows.Forms)
                 var detailForm = new PrescriptionDetailForm(false ,prescriptionId);
-                detailForm.ShowDialog(); // Открывает модально поверх WPF-окна
+                detailForm.ShowDialog(); 
             }
         }
     }

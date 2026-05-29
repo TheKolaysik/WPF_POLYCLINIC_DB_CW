@@ -1,4 +1,6 @@
-﻿using System;
+﻿using Dapper;
+using System;
+using System.Collections;
 using System.Collections.Generic;
 using System.Configuration;
 using System.Data;
@@ -7,13 +9,15 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Controls;
+using System.Windows.Forms;
+using WPF_POLYCLINIC_DB_CourseWork.Models;
 
 namespace WPF_POLYCLINIC_DB_CourseWork.Employee.Logic
 {
     public class EmployeeReport
     {
         private static string connectionString = ConfigurationManager.ConnectionStrings["DefaultConnection"].ConnectionString;
-        public void GetPatientsTableByDistrictDoctor(long idDoctor, DataGrid dataGrid)
+        public void GetPatientsTableByDistrictDoctor(long idDoctor, System.Windows.Controls.DataGrid dataGrid)
         {
             DataTable dt = new DataTable();
 
@@ -51,7 +55,6 @@ namespace WPF_POLYCLINIC_DB_CourseWork.Employee.Logic
         {
             DataTable dt = new DataTable();
 
-            // Исправлено: [PatientID] вместо [DoctorID] для фильтрации по пациенту
             string sql = @"
         SELECT 
             [PrescriptionID] AS [ID Рецепта],
@@ -89,7 +92,6 @@ namespace WPF_POLYCLINIC_DB_CourseWork.Employee.Logic
         {
             DataTable dt = new DataTable();
 
-            // Исправлено: [PatientID] вместо [DoctorID] для фильтрации по пациенту
             string sql = @"
         SELECT 
             [PrescriptionID] AS [ID Рецепта],
@@ -140,7 +142,6 @@ namespace WPF_POLYCLINIC_DB_CourseWork.Employee.Logic
             [DoctorName] AS [Врач]
         FROM [View_PatientHistoryRecords]
         WHERE [PatientID] = @IdPacient
-          AND [DoctorID] = @IdDoctor
           AND ([RecordStatus] IN ({statusesString}) OR [RecordStatus] IS NULL)
           AND ([RecordType] = 'Приём' OR [RecordType] IS NULL)
         ORDER BY [RecordDate] DESC";
@@ -179,20 +180,20 @@ namespace WPF_POLYCLINIC_DB_CourseWork.Employee.Logic
             string statusesString = string.Join(", ", selectedStatuses.Select(s => $"'{s.Replace("'", "''")}'"));
             
             string sql = $@"
-        SELECT 
-            [PatientName] AS [Пациент],
-            [Gender] AS [Пол],
-            [NumberPolicy] AS [Номер полиса],
-            [RecordNumber] AS [Номер записи],
-            [RecordDate] AS [Дата],
-            [RecordStatus] AS [Статус],
-            [Symptoms] AS [Симптомы],
-            [DoctorName] AS [Врач]
-        FROM [View_PatientHistoryRecords]
-        WHERE [DoctorID] = @IdDoctor
-          AND ([RecordStatus] IN ({statusesString}) OR [RecordStatus] IS NULL)
-          AND ([RecordType] = 'Приём' OR [RecordType] IS NULL)
-        ORDER BY [RecordDate] DESC";
+                SELECT 
+                    [RecordNumber] AS [ID записи],
+                    [PatientName] AS [Пациент],
+                    [Gender] AS [Пол],
+                    [NumberPolicy] AS [Номер полиса],
+                    [RecordDate] AS [Дата],
+                    [RecordStatus] AS [Статус],
+                    [Symptoms] AS [Симптомы],
+                    [DoctorName] AS [Врач]
+                FROM [View_PatientHistoryRecords]
+                WHERE [DoctorID] = @IdDoctor
+                  AND ([RecordStatus] IN ({statusesString}) OR [RecordStatus] IS NULL)
+                  AND ([RecordType] = 'Приём' OR [RecordType] IS NULL)
+                ORDER BY [RecordDate] DESC";
 
             DataTable dt = new DataTable();
             using (SqlConnection connection = new SqlConnection(connectionString))
@@ -218,6 +219,98 @@ namespace WPF_POLYCLINIC_DB_CourseWork.Employee.Logic
                 }
             }
             dataGrid.ItemsSource = dt.DefaultView;
+        }
+
+        public void GetDiagnosesList(DataGridView dataGridView)
+        {
+            DataTable dt = new DataTable();
+            string sql = "SELECT * FROM [Диагноз] ORDER BY Name ASC";
+
+            using (var conn = new SqlConnection(connectionString))
+            {
+                using (var cmd = new SqlCommand(sql, conn))
+                {
+                    using (var adapter = new SqlDataAdapter(cmd))
+                    {
+                        try
+                        {
+                            adapter.Fill(dt);
+                            dataGridView.DataSource = dt;
+                        }
+                        catch (Exception ex)
+                        {
+                            System.Windows.MessageBox.Show($"Ошибка при загрузке справочника диагнозов: {ex.Message}");
+                        }
+                    }
+                }
+            }
+        }
+        public void GetMedicamentsList(DataGridView dataGridView)
+        {
+            DataTable dt = new DataTable();
+            string sql = "SELECT * FROM [Лекарство] ORDER BY Name ASC";
+
+            using (var conn = new SqlConnection(connectionString))
+            {
+                using (var cmd = new SqlCommand(sql, conn))
+                {
+                    using (var adapter = new SqlDataAdapter(cmd))
+                    {
+                        try
+                        {
+                            adapter.Fill(dt);
+                            dataGridView.DataSource = dt;
+                        }
+                        catch (Exception ex)
+                        {
+                            System.Windows.MessageBox.Show($"Ошибка при загрузке справочника диагнозов: {ex.Message}");
+                        }
+                    }
+                }
+            }
+        }
+
+        public Patient AuthenticatePatientById(long id)
+        {
+            string sql = @"
+                SELECT p.* FROM [Пациент] p
+                INNER JOIN [История] h ON p.ID_pacient = h.ID_pacient
+                WHERE h.ID_history = @Id";
+            using (var conn = new SqlConnection(connectionString))
+            {
+                // Получаем пациента по его ID
+                var patient = conn.QueryFirstOrDefault<Patient>(
+                    sql, new { Id = id });
+
+                if (patient == null)
+                    throw new Exception("Пациент с таким ID не существует!");
+                return patient;
+                
+            }
+        }
+
+        public HistoryRecord AuthenticateHistoryById(long id)
+        {
+            string sql = @"
+            SELECT 
+                h.ID_history,
+                h.ID_pacient,
+                h.ID_doctor,
+                h.Date
+            FROM [История] h
+            WHERE h.ID_history = @Id
+            ORDER BY h.Date DESC";
+            using (var conn = new SqlConnection(connectionString))
+            {
+                // Получаем пациента по его ID
+                var history = conn.QueryFirstOrDefault<HistoryRecord>(
+                    sql, new { Id = id });
+
+                if (history == null)
+                    throw new Exception("Запись с таким ID не существует!");
+                return history;
+
+            }
         }
     }
 }

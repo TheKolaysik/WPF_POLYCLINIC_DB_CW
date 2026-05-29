@@ -45,7 +45,6 @@ namespace WPF_POLYCLINIC_DB_CourseWork.Employee.Logic
                 cmd.Parameters.Add("@disDoctor", SqlDbType.BigInt).Value = (doctorId > 0) ? (object)doctorId : DBNull.Value;
                 cmd.Parameters.Add("@login", SqlDbType.VarChar).Value = login;
 
-                // Передаем байты напрямую в varbinary(32)
                 cmd.Parameters.Add("@passwordHash", SqlDbType.VarBinary, 32).Value = passwordHash;
 
                 cmd.Parameters.Add("@phone", SqlDbType.VarChar).Value = phone;
@@ -85,6 +84,97 @@ namespace WPF_POLYCLINIC_DB_CourseWork.Employee.Logic
             }
 
             throw new Exception("Неверный пароль!"); // Пароль неверный
+        }
+
+        public List<string> GetFreeSlots(long doctorId, DateTime date)
+        {
+            // Расписание врача 
+            TimeSpan startShift = new TimeSpan(8, 0, 0);  // 08:00
+            TimeSpan endShift = new TimeSpan(17, 0, 0);  // 17:00
+            TimeSpan slotDuration = TimeSpan.FromMinutes(30);
+
+            // Генерируем все потенциальные слоты для записи на этот день
+            List<TimeSpan> allSlots = new List<TimeSpan>();
+            for (TimeSpan slot = startShift; slot < endShift; slot = slot.Add(slotDuration))
+            {
+                allSlots.Add(slot);
+            }
+
+            string sql = @"
+                SELECT CAST([Date] AS TIME) 
+                FROM [История] 
+                WHERE ID_doctor = @DoctorId 
+                  AND CAST([Date] AS DATE) = CAST(@Date AS DATE)";
+
+            using (var conn = new SqlConnection(connectionString))
+            {
+                // Получаем список занятых TimeSpan
+                var busySlots = conn.Query<TimeSpan>(sql, new { DoctorId = doctorId, Date = date.Date }).ToList();
+
+                // Исключаем занятые слоты из общего расписания
+                var freeSlots = allSlots.Where(slot => !busySlots.Contains(slot))
+                                         .Select(slot => slot.ToString(@"hh\:mm"))
+                                         .ToList();
+
+                return freeSlots;
+            }
+        }
+        public void AddAppointment(long patientId, long doctorId, DateTime appointmentDateTime, string Symptoms)
+        {
+            // Проверяем, что время кратно 30 минутам 
+            if (appointmentDateTime.Minute % 30 != 0)
+            {
+                throw new Exception("Запись возможна только на ровные слоты (например, 10:00 или 10:30).");
+            }
+
+            // Запрос, который проверяет наличие записи к этому врачу именно на это время
+            string sqlCheck = @"
+                SELECT COUNT(1) 
+                FROM [История] 
+                WHERE ID_doctor = @DoctorId 
+                  AND [Date] = @AppointmentDateTime";
+
+            // Запрос на добавление новой записи в историю
+            string sqlInsert = @"
+                INSERT INTO [История] (ID_pacient, ID_doctor, [Date], Status, Symptoms) 
+                VALUES (@PatientId, @DoctorId, @AppointmentDateTime, 'Предстоящий', @Symptoms)";
+
+
+
+            using (var conn = new SqlConnection(connectionString))
+            {
+                conn.Open();
+                using (var transaction = conn.BeginTransaction())
+                {
+                    try
+                    {
+                        // Проверяем, занято ли время
+                        int isBusy = conn.ExecuteScalar<int>(sqlCheck,
+                            new { DoctorId = doctorId, AppointmentDateTime = appointmentDateTime },
+                            transaction);
+
+                        if (isBusy > 0)
+                        {
+                            throw new Exception("Извините, это время уже занято другим пациентом");
+                        }                      
+                        conn.Execute(sqlInsert,
+                            new { PatientId = patientId, DoctorId = doctorId, AppointmentDateTime = appointmentDateTime, Symptoms = Symptoms },
+                            transaction);
+
+                        // Подтверждаем транзакцию
+                        transaction.Commit();
+                        System.Windows.MessageBox.Show("Вы успешно записаны на прием!", "Успех",
+                            System.Windows.MessageBoxButton.OK, System.Windows.MessageBoxImage.Information);
+                    }
+                    catch (Exception ex)
+                    {
+                        // В случае ошибки отменяем операцию
+                        transaction.Rollback();
+                        System.Windows.MessageBox.Show($"Не удалось записаться: {ex.Message}", "Ошибка",
+                            System.Windows.MessageBoxButton.OK, System.Windows.MessageBoxImage.Error);
+                    }
+                }
+            }
         }
     }
 }

@@ -99,17 +99,17 @@ namespace WPF_POLYCLINIC_DB_CourseWork.Employee.Logic
             // Получаем пациента по логину
             var doctor = connection.QueryFirstOrDefault<Doctor>(
                 @"SELECT d.ID_doctor AS [ID_doctor], 
-        d.FirstName AS [FirstName], 
-        d.SurName AS [SurName], 
-        d.Cabinet AS [Cabinet],
-        d.Experience AS [Experience],
-        d.Phone AS [Phone],
-        d.Working AS [Working],
-        d.Vacation AS [Vacation],
-        d.Login AS [Login],
-        d.Password AS [Password],
-        spec.Name AS [SpecializationName]
-         FROM [Врач] d LEFT JOIN [Специальность] spec ON d.ID_specialization = spec.ID_specialization WHERE Login = @Login",
+                d.FirstName AS [FirstName], 
+                d.SurName AS [SurName], 
+                d.Cabinet AS [Cabinet],
+                d.Experience AS [Experience],
+                d.Phone AS [Phone],
+                d.Working AS [Working],
+                d.Vacation AS [Vacation],
+                d.Login AS [Login],
+                d.Password AS [Password],
+                spec.Name AS [SpecializationName]
+                 FROM [Врач] d LEFT JOIN [Специальность] spec ON d.ID_specialization = spec.ID_specialization WHERE Login = @Login",
                 new { Login = login }
             );
 
@@ -127,6 +127,7 @@ namespace WPF_POLYCLINIC_DB_CourseWork.Employee.Logic
             throw new Exception("Неверный пароль!"); // Пароль неверный
         }
 
+        // Получить свободное время у врача
         public List<string> GetFreeSlots(long doctorId, DateTime date)
         {
             // Расписание врача 
@@ -160,6 +161,7 @@ namespace WPF_POLYCLINIC_DB_CourseWork.Employee.Logic
                 return freeSlots;
             }
         }
+        // Запись на приём
         public void AddAppointment(long patientId, long doctorId, DateTime appointmentDateTime)
         {
             // Проверяем, что время кратно 30 минутам 
@@ -216,7 +218,8 @@ namespace WPF_POLYCLINIC_DB_CourseWork.Employee.Logic
                 }
             }
         }
-        public void CreatePrescription(long historyId, long doctorId, DateTime issueDate, string instruction)
+        // Создать рецепт
+        public long CreatePrescription(long historyId, long doctorId, DateTime issueDate, string instruction)
         {
             // Запрос на создание рецепта. Возвращает ID созданной записи.
             string sqlInsertPrescription = @"
@@ -228,7 +231,7 @@ namespace WPF_POLYCLINIC_DB_CourseWork.Employee.Logic
             string sqlLinkToHistory = @"
                 INSERT INTO [История_Рецепт] (ID_history, ID_prescription)
                 VALUES (@HistoryId, @PrescriptionId);";
-
+            long newPrescriptionId = 0;
             using (SqlConnection conn = new SqlConnection(connectionString))
             {
                 try
@@ -238,7 +241,6 @@ namespace WPF_POLYCLINIC_DB_CourseWork.Employee.Logic
                     {
                         try
                         {
-                            long newPrescriptionId;
 
                             using (SqlCommand cmdPrescription = new SqlCommand(sqlInsertPrescription, conn, transaction))
                             {
@@ -273,8 +275,11 @@ namespace WPF_POLYCLINIC_DB_CourseWork.Employee.Logic
                     System.Windows.Forms.MessageBox.Show($"Не удалось создать рецепт: {ex.Message}", "Ошибка",
                         (MessageBoxButtons)MessageBoxButton.OK, (MessageBoxIcon)MessageBoxImage.Error);
                 }
+                return newPrescriptionId;
             }
+            
         }
+        // Добавить лекарство в рецепт
         public void AddMedicamentToPrescription(long prescriptionId, long medicamentId)
         {
             string sql = @"
@@ -306,10 +311,11 @@ namespace WPF_POLYCLINIC_DB_CourseWork.Employee.Logic
                 }
             }
         }
+        // Добавить диагноз
         public void AddDiagnosisToHistory(long historyId, long diagnosisId)
         {
             string sql = @"
-                INSERT INTO [История_Диагноз] (ID_history, ID_diagnosis)
+                INSERT INTO [Диагноз_История] (ID_history, ID_diagnos)
                 VALUES (@HistoryId, @DiagnosisId)";
 
             using (SqlConnection conn = new SqlConnection(connectionString))
@@ -331,6 +337,233 @@ namespace WPF_POLYCLINIC_DB_CourseWork.Employee.Logic
                     {
                         System.Windows.Forms.MessageBox.Show($"Ошибка при добавлении диагноза: {ex.Message}", "Ошибка",
                             MessageBoxButtons.OK, (MessageBoxIcon)MessageBoxImage.Error);
+                    }
+                }
+            }
+        }
+
+        // Завершить приём
+        public void CompleteAppointment(long idHistory)
+        {
+            string sql = @"
+                UPDATE [История]
+                SET [Status] = N'Завершённый'
+                WHERE [ID_history] = @IdHistory";
+
+            using (SqlConnection conn = new SqlConnection(connection.ConnectionString))
+            {
+                using (SqlCommand cmd = new SqlCommand(sql, conn))
+                {
+                    // Привязываем параметр типа BigInt (long)
+                    cmd.Parameters.Add("@IdHistory", SqlDbType.BigInt).Value = idHistory;
+
+                    try
+                    {
+                        conn.Open();
+                        int rowsAffected = cmd.ExecuteNonQuery();
+
+
+                    }
+                    catch (Exception ex)
+                    {
+                        System.Windows.Forms.MessageBox.Show($"Ошибка при обновлении статуса: {ex.Message}", "Ошибка",
+                            MessageBoxButtons.OK, MessageBoxIcon.Error);
+                    }
+                } 
+            } 
+        }
+        public void DeleteDoctorAndReassignPatients(long deletingDoctorId)
+        {
+            // 1. Запрос поиска нового врача: ищем доктора той же специальности, который работает, не в отпуске, 
+            // не является удаляемым, и у него МИНИМУМ пациентов на участке (через LEFT JOIN и COUNT).
+            string sqlFindNewDoctor = @"
+                SELECT TOP 1 d.ID_doctor
+                FROM [Врач] d
+                LEFT JOIN [Пациент] p ON d.ID_doctor = p.ID_doctor
+                WHERE d.ID_specialization = (SELECT ID_specialization FROM [Врач] WHERE ID_doctor = @DeletingId)
+                  AND d.ID_doctor <> @DeletingId
+                  AND d.Working = 1
+                  AND d.Vacation = 0
+                GROUP BY d.ID_doctor
+                ORDER BY COUNT(p.ID_pacient) ASC";
+
+            // Запрос на перевод пациентов к новому врачу
+            string sqlReassignPatients = @"
+                UPDATE [Пациент]
+                SET ID_doctor = @NewDoctorId
+                WHERE ID_doctor = @DeletingId;";
+
+            // Запрос на удаление старого врача
+            string sqlDeleteDoctor = @"
+                DELETE FROM [Врач]
+                WHERE ID_doctor = @DeletingId";
+
+            using (SqlConnection conn = new SqlConnection(connection.ConnectionString))
+            {
+                conn.Open();
+
+                // Открываем транзакцию
+                using (SqlTransaction transaction = conn.BeginTransaction())
+                {
+                    try
+                    {
+                        long? newDoctorId = null;
+
+                        // Ищем нового врача
+                        using (SqlCommand cmdFind = new SqlCommand(sqlFindNewDoctor, conn, transaction))
+                        {
+                            cmdFind.Parameters.Add("@DeletingId", SqlDbType.BigInt).Value = deletingDoctorId;
+                            object result = cmdFind.ExecuteScalar();
+
+                            if (result != null && result != DBNull.Value)
+                            {
+                                newDoctorId = Convert.ToInt64(result);
+                            }
+                        }
+
+                        // Если у удаляемого врача были пациенты, но замену мы не нашли (он был единственным специалистом)
+                        if (newDoctorId == null)
+                        {
+                            // Проверяем, есть ли вообще у него пациенты
+                            string sqlCheckPatients = "SELECT COUNT(*) FROM [Пациент] WHERE ID_doctor = @DeletingId";
+                            int patientCount = 0;
+
+                            using (SqlCommand cmdCheck = new SqlCommand(sqlCheckPatients, conn, transaction))
+                            {
+                                cmdCheck.Parameters.Add("@DeletingId", SqlDbType.BigInt).Value = deletingDoctorId;
+                                patientCount = (int)cmdCheck.ExecuteScalar();
+                            }
+
+                            if (patientCount > 0)
+                            {
+                                throw new Exception("Невозможно удалить врача. В системе нет других активных врачей этой специальности для перевода пациентов!");
+                            }
+                        }
+
+                        // Если замена найдена, переводим пациентов
+                        if (newDoctorId != null)
+                        {
+                            using (SqlCommand cmdReassign = new SqlCommand(sqlReassignPatients, conn, transaction))
+                            {
+                                cmdReassign.Parameters.Add("@DeletingId", SqlDbType.BigInt).Value = deletingDoctorId;
+                                cmdReassign.Parameters.Add("@NewDoctorId", SqlDbType.BigInt).Value = newDoctorId.Value;
+                                cmdReassign.ExecuteNonQuery();
+                            }
+                        }
+
+                        // Удаляем врача
+                        using (SqlCommand cmdDelete = new SqlCommand(sqlDeleteDoctor, conn, transaction))
+                        {
+                            cmdDelete.Parameters.Add("@DeletingId", SqlDbType.BigInt).Value = deletingDoctorId;
+                            cmdDelete.ExecuteNonQuery();
+                        }
+
+                        // Если всё прошло гладко — подтверждаем транзакцию
+                        transaction.Commit();
+                        System.Windows.Forms.MessageBox.Show("Врач успешно удален, его пациенты переведены к наименее загруженному коллеге.", "Успех", MessageBoxButtons.OK, MessageBoxIcon.Information);
+                    }
+                    catch (Exception ex)
+                    {
+                        // При любой ошибке откатываем все изменения назад
+                        transaction.Rollback();
+                        System.Windows.Forms.MessageBox.Show($"Ошибка при удалении врача: {ex.Message}", "Ошибка", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                    }
+                }
+            }
+        }
+        public void DeletePatientWithHistoryAndPrescriptions(long patientId)
+        {
+            // Удаляем связи лекарств с рецептами этого пациента
+            string sqlDeleteMedicaments = @"
+        DELETE lr 
+        FROM [Лекарство_Рецепт] lr
+        INNER JOIN [История_Рецепт] hr ON lr.ID_prescription = hr.ID_prescription
+        INNER JOIN [История] h ON hr.ID_history = h.ID_history
+        WHERE h.ID_pacient = @PatientId";
+
+            //  Удаляем связи рецептов и истории
+            string sqlDeleteHistoryPrescriptions = @"
+        DELETE hr 
+        FROM [История_Рецепт] hr
+        INNER JOIN [История] h ON hr.ID_history = h.ID_history
+        WHERE h.ID_pacient = @PatientId";
+
+            //  Удаляем сами рецепты пациента
+            string sqlDeletePrescriptions = @"
+        DELETE r 
+        FROM [Рецепт] r
+        INNER JOIN [История_Рецепт] hr ON r.ID_prescription = hr.ID_prescription
+        INNER JOIN [История] h ON hr.ID_history = h.ID_history
+        WHERE h.ID_pacient = @PatientId";
+
+            //  Удаляем записи из истории приемов пациента
+            string sqlDeleteHistory = @"
+        DELETE FROM [История] 
+        WHERE ID_pacient = @PatientId";
+
+            //  Удаляем самого пациента
+            string sqlDeletePatient = @"
+        DELETE FROM [Пациент] 
+        WHERE ID_pacient = @PatientId";
+
+            using (SqlConnection conn = new SqlConnection(connection.ConnectionString))
+            {
+                conn.Open();
+
+                // Запускаем транзакцию, чтобы гарантировать: либо удалится ВСЁ, либо НИЧЕГО
+                using (SqlTransaction transaction = conn.BeginTransaction())
+                {
+                    try
+                    {
+                        // Шаг 1: Удаляем лекарства из рецептов
+                        using (SqlCommand cmd = new SqlCommand(sqlDeleteMedicaments, conn, transaction))
+                        {
+                            cmd.Parameters.Add("@PatientId", SqlDbType.BigInt).Value = patientId;
+                            cmd.ExecuteNonQuery();
+                        }
+
+                        // Шаг 2: Удаляем связи История-Рецепт
+                        using (SqlCommand cmd = new SqlCommand(sqlDeleteHistoryPrescriptions, conn, transaction))
+                        {
+                            cmd.Parameters.Add("@PatientId", SqlDbType.BigInt).Value = patientId;
+                            cmd.ExecuteNonQuery();
+                        }
+
+                        // Шаг 3: Удаляем рецепты
+                        using (SqlCommand cmd = new SqlCommand(sqlDeletePrescriptions, conn, transaction))
+                        {
+                            cmd.Parameters.Add("@PatientId", SqlDbType.BigInt).Value = patientId;
+                            cmd.ExecuteNonQuery();
+                        }
+
+                        // Шаг 4: Удаляем историю
+                        using (SqlCommand cmd = new SqlCommand(sqlDeleteHistory, conn, transaction))
+                        {
+                            cmd.Parameters.Add("@PatientId", SqlDbType.BigInt).Value = patientId;
+                            cmd.ExecuteNonQuery();
+                        }
+
+                        // Шаг 5: Удаляем пациента
+                        using (SqlCommand cmd = new SqlCommand(sqlDeletePatient, conn, transaction))
+                        {
+                            cmd.Parameters.Add("@PatientId", SqlDbType.BigInt).Value = patientId;
+                            int rowsAffected = cmd.ExecuteNonQuery();
+
+                            if (rowsAffected == 0)
+                            {
+                                throw new Exception("Пациент с таким ID не найден в базе данных.");
+                            }
+                        }
+
+                        // Если все шаги выполнены без ошибок, сохраняем изменения в БД
+                        transaction.Commit();
+                        System.Windows.Forms.MessageBox.Show("Данные пациента, включая историю и рецепты, успешно удалены.", "Успех", MessageBoxButtons.OK, MessageBoxIcon.Information);
+                    }
+                    catch (Exception ex)
+                    {
+                        // Если что-то пошло не так (например, оборвалось соединение), база вернется в исходное состояние
+                        transaction.Rollback();
+                        System.Windows.Forms.MessageBox.Show($"Ошибка при удалении данных: {ex.Message}", "Ошибка", MessageBoxButtons.OK, MessageBoxIcon.Error);
                     }
                 }
             }

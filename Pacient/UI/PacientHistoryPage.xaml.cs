@@ -54,23 +54,8 @@ namespace WPF_POLYCLINIC_DB_CourseWork.Employee.UI
                     break;
 
             }
-            List<string> type = null;
-            switch (typeFilter.SelectedIndex)
-            {
-                case 0:
-                    type = new List<string>() { "Направления" };
-                    break;
-                case 1:
-                    type = new List<string>() { "Приёмы" };
-                    break;
-                case 2:
-                    type = new List<string>() { "Направления", "Приёмы" };
-                    break;
-                default:
-                    break;
-
-            }
-            pacientReport.DisplayHistoryPacient(dataGridMyHistory, id, status, type);
+            
+            pacientReport.DisplayHistoryPacient(dataGridMyHistory, id, status);
         }
 
 

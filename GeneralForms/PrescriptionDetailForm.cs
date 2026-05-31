@@ -20,7 +20,7 @@ namespace WPF_POLYCLINIC_DB_CourseWork.Pacient.UI
         {
             InitializeComponent();
             _editable = editable;
-            pacientReport.LoadPrescriptionDetails(id, textBox4, dataGridView1);
+            pacientReport.LoadPrescriptionDetails(id, textBox1, textBox2, textBox3, textBox4, dataGridView1);
 
         }
 

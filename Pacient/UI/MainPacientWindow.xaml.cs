@@ -66,5 +66,11 @@ namespace WPF_POLYCLINIC_DB_CourseWork.Employee.UI
             pacientHistoryPage.UpdateData(currentPacient.ID_pacient);
             framePages.Navigate(pacientHistoryPage);
         }
+
+        private void buttonExportExcel_Click(object sender, RoutedEventArgs e)
+        {
+            var exportForm = new ExportFormPacient(currentPacient.ID_pacient);
+            exportForm.ShowDialog();
+        }
     }
 }

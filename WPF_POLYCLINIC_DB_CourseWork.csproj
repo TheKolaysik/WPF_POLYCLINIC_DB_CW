@@ -47,6 +47,14 @@
     <Reference Include="Microsoft.Bcl.AsyncInterfaces, Version=10.0.0.8, Culture=neutral, PublicKeyToken=cc7b13ffcd2ddd51, processorArchitecture=MSIL">
       <HintPath>packages\Microsoft.Bcl.AsyncInterfaces.10.0.8\lib\net462\Microsoft.Bcl.AsyncInterfaces.dll</HintPath>
     </Reference>
+    <Reference Include="Microsoft.Office.Interop.Excel, Version=16.0.0.0, Culture=neutral, PublicKeyToken=71e9bce111e9429c, processorArchitecture=MSIL">
+      <HintPath>packages\Microsoft.Office.Interop.Excel.16.0.18925.20022\lib\net40\Microsoft.Office.Interop.Excel.dll</HintPath>
+      <EmbedInteropTypes>True</EmbedInteropTypes>
+    </Reference>
+    <Reference Include="Microsoft.Office.Interop.Word, Version=15.0.0.0, Culture=neutral, PublicKeyToken=71e9bce111e9429c, processorArchitecture=MSIL">
+      <HintPath>packages\Microsoft.Office.Interop.Word.15.0.4797.1004\lib\net20\Microsoft.Office.Interop.Word.dll</HintPath>
+      <EmbedInteropTypes>True</EmbedInteropTypes>
+    </Reference>
     <Reference Include="System" />
     <Reference Include="System.Configuration" />
     <Reference Include="System.Data" />
@@ -118,6 +126,7 @@
     <Compile Include="Models\Doctor.cs" />
     <Compile Include="Models\HistoryRecord.cs" />
     <Compile Include="Models\Patient.cs" />
+    <Compile Include="Pacient\Logic\ModelForExport.cs" />
     <Compile Include="Pacient\Logic\PacientReport.cs" />
     <Compile Include="Pacient\Logic\PacientService.cs" />
     <Compile Include="Employee\UI\EmployeeMyPacHistory.xaml.cs">
@@ -188,6 +197,12 @@
     </EmbeddedResource>
     <EmbeddedResource Include="GeneralForms\AboutBox.resx">
       <DependentUpon>AboutBox.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="GeneralForms\ExportFormEmployee.resx">
+      <DependentUpon>ExportFormEmployee.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="GeneralForms\ExportFormPacient.resx">
+      <DependentUpon>ExportFormPacient.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="GeneralForms\LoginForm.resx">
       <DependentUpon>LoginForm.cs</DependentUpon>

@@ -18,6 +18,7 @@ namespace WPF_POLYCLINIC_DB_CourseWork
     {
         static MainPacientWindow mainPacientWindow = new MainPacientWindow();
         static MainEmployeeWindow mainEmployeeWindow = new MainEmployeeWindow();
+        static AdministratorForm administratorForm = new AdministratorForm();
         PacientService pacientService = new PacientService();
         EmployeeService employeeService = new EmployeeService();
         public LoginForm()
@@ -42,8 +43,7 @@ namespace WPF_POLYCLINIC_DB_CourseWork
         }
 
         private void btnAuthPacient_Click(object sender, EventArgs e)
-        {
-            
+        {            
             try
             {
                 Patient currentPatient = pacientService.AuthenticatePatient(login.Text.Trim(), password.Text.Trim());
@@ -66,8 +66,15 @@ namespace WPF_POLYCLINIC_DB_CourseWork
             {
                 Doctor currentDoctor = employeeService.AuthenticateEmployee(login.Text.Trim(), password.Text.Trim());
                 this.Hide();
-                mainEmployeeWindow.AuthPacient(currentDoctor);
-                mainEmployeeWindow.ShowDialog();
+                if (currentDoctor.SpecializationName != "Администратор")
+                {
+                    mainEmployeeWindow.AuthPacient(currentDoctor);
+                    mainEmployeeWindow.ShowDialog();
+                }
+                else
+                {
+                    administratorForm.ShowDialog();
+                }
             }
             catch (Exception ex)
             {

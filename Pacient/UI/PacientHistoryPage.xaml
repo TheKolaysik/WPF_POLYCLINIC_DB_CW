@@ -60,14 +60,6 @@
         <StackPanel Grid.Row="2" 
             Orientation="Horizontal" 
             Margin="260,10,0,0" Width="232" HorizontalAlignment="Left">
-
-            <ComboBox x:Name="typeFilter" Width="146" 
-                VerticalAlignment="Center" 
-                Margin="5" Height="24" SelectedIndex="2">
-                <sys:String>Направления</sys:String>
-                <sys:String>Приёмы</sys:String>
-                <sys:String>Все обследования</sys:String>
-            </ComboBox>
             <Button Content="Обновить" 
                 Width="68" 
                 Height="24" 

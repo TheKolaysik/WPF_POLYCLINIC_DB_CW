@@ -24,6 +24,8 @@ namespace WPF_POLYCLINIC_DB_CourseWork.Pacient.UI
             InitializeComponent();
             this.pacientId = pacientId;
             pacientReport.DisplayFreeDoctor(dataGridView: dataGridView1);
+            button1.Hide();
+            button3.Hide();
         }
 
         private void dateTimePicker1_ValueChanged(object sender, EventArgs e)
@@ -74,14 +76,18 @@ namespace WPF_POLYCLINIC_DB_CourseWork.Pacient.UI
 
 
                 comboBox1.DataSource = pacientService.GetFreeSlots(id, dateTimePicker1.Value);
-                
+                button2.Hide();
+                button1.Show();
+                button3.Show();
             }
         }
 
         // Отменить
         private void button3_Click(object sender, EventArgs e)
         {
-
+            button2.Show();
+            button1.Hide();
+            button3.Hide();
         }
     }
 }

@@ -84,17 +84,7 @@
                 </StackPanel>
 
                 <StackPanel Grid.Row="2" VerticalAlignment="Center" Cursor="Hand">
-                    <Button x:Name="buttonExportExcel" Content="Экспорт в Excel" Height="30" Margin="0,5" FontFamily="Segoe UI Black" Foreground="WhiteSmoke" >
-                        <Button.Background>
-                            <SolidColorBrush Color="#FF665959"/>
-                        </Button.Background>
-                        <Button.Resources>
-                            <Style TargetType="Border">
-                                <Setter Property="CornerRadius" Value="5"/>
-                            </Style>
-                        </Button.Resources>
-                    </Button>
-                    <Button x:Name="buttonExportWord" Content="Экспорт в Word" Height="30" Margin="0,5" FontFamily="Segoe UI Black" Foreground="WhiteSmoke" >
+                    <Button x:Name="buttonExportExcel" Content="Экспорт в Word/Excel" Height="30" Margin="0,5" FontFamily="Segoe UI Black" Foreground="WhiteSmoke" Click="buttonExportExcel_Click" >
                         <Button.Background>
                             <SolidColorBrush Color="#FF665959"/>
                         </Button.Background>

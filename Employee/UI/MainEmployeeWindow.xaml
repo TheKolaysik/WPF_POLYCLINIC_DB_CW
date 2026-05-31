@@ -92,14 +92,7 @@
                         </Style>
                     </StackPanel.Resources>
 
-                    <Button x:Name="buttonExportExcel" Content="Экспорт в Excel">
-                        <Button.Resources>
-                            <Style TargetType="Border">
-                                <Setter Property="CornerRadius" Value="6"/>
-                            </Style>
-                        </Button.Resources>
-                    </Button>
-                    <Button x:Name="buttonExportWord" Content="Экспорт в Word">
+                    <Button x:Name="buttonExportExcel" Content="Экспорт в Word/Excel" Click="buttonExportExcel_Click">
                         <Button.Resources>
                             <Style TargetType="Border">
                                 <Setter Property="CornerRadius" Value="6"/>

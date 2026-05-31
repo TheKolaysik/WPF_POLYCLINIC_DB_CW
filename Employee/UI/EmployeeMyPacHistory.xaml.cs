@@ -70,6 +70,19 @@ namespace WPF_POLYCLINIC_DB_CourseWork.Employee.UI
                 button_INPUT.Visibility = Visibility.Visible;
             }
         }
+
+        // Добавьте эти методы внутрь класса EmployeeMyPacHistory
+        public void InvokePatientChanged(Patient newPatient)
+        {
+            this.patient = newPatient;
+            _onPatientChanged?.Invoke(newPatient);
+        }
+
+        public void InvokeHistoryChanged(HistoryRecord newHistory)
+        {
+            this.historyRecord = newHistory;
+            _onHistoryRecordChanged?.Invoke(newHistory);
+        }
         public void UpdateData(long IdDoctor, long IdPatient)
         {
             id = IdDoctor;

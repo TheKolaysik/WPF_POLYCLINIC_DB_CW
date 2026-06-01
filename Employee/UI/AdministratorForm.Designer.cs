@@ -33,7 +33,6 @@
             this.passwordField = new System.Windows.Forms.TextBox();
             this.loginField = new System.Windows.Forms.TextBox();
             this.idSpecField = new System.Windows.Forms.TextBox();
-            this.phoneField = new System.Windows.Forms.TextBox();
             this.experienceField = new System.Windows.Forms.TextBox();
             this.cabinetField = new System.Windows.Forms.TextBox();
             this.surNameField = new System.Windows.Forms.TextBox();
@@ -47,12 +46,17 @@
             this.label8 = new System.Windows.Forms.Label();
             this.label7 = new System.Windows.Forms.Label();
             this.label6 = new System.Windows.Forms.Label();
-            this.label5 = new System.Windows.Forms.Label();
             this.label4 = new System.Windows.Forms.Label();
             this.label3 = new System.Windows.Forms.Label();
             this.label2 = new System.Windows.Forms.Label();
             this.label1 = new System.Windows.Forms.Label();
             this.tabPage2 = new System.Windows.Forms.TabPage();
+            this.price = new System.Windows.Forms.TextBox();
+            this.label25 = new System.Windows.Forms.Label();
+            this.manufacturer = new System.Windows.Forms.TextBox();
+            this.label10 = new System.Windows.Forms.Label();
+            this.sideEffects = new System.Windows.Forms.TextBox();
+            this.label9 = new System.Windows.Forms.Label();
             this.buttonEditMedicament = new System.Windows.Forms.Button();
             this.buttonAddMedicament = new System.Windows.Forms.Button();
             this.dataGridView3 = new System.Windows.Forms.DataGridView();
@@ -137,7 +141,6 @@
             this.tabPage1.Controls.Add(this.passwordField);
             this.tabPage1.Controls.Add(this.loginField);
             this.tabPage1.Controls.Add(this.idSpecField);
-            this.tabPage1.Controls.Add(this.phoneField);
             this.tabPage1.Controls.Add(this.experienceField);
             this.tabPage1.Controls.Add(this.cabinetField);
             this.tabPage1.Controls.Add(this.surNameField);
@@ -151,7 +154,6 @@
             this.tabPage1.Controls.Add(this.label8);
             this.tabPage1.Controls.Add(this.label7);
             this.tabPage1.Controls.Add(this.label6);
-            this.tabPage1.Controls.Add(this.label5);
             this.tabPage1.Controls.Add(this.label4);
             this.tabPage1.Controls.Add(this.label3);
             this.tabPage1.Controls.Add(this.label2);
@@ -166,31 +168,24 @@
             // 
             // passwordField
             // 
-            this.passwordField.Location = new System.Drawing.Point(132, 265);
+            this.passwordField.Location = new System.Drawing.Point(132, 241);
             this.passwordField.Name = "passwordField";
             this.passwordField.Size = new System.Drawing.Size(149, 20);
             this.passwordField.TabIndex = 34;
             // 
             // loginField
             // 
-            this.loginField.Location = new System.Drawing.Point(132, 231);
+            this.loginField.Location = new System.Drawing.Point(132, 207);
             this.loginField.Name = "loginField";
             this.loginField.Size = new System.Drawing.Size(149, 20);
             this.loginField.TabIndex = 33;
             // 
             // idSpecField
             // 
-            this.idSpecField.Location = new System.Drawing.Point(130, 199);
+            this.idSpecField.Location = new System.Drawing.Point(130, 175);
             this.idSpecField.Name = "idSpecField";
             this.idSpecField.Size = new System.Drawing.Size(149, 20);
             this.idSpecField.TabIndex = 32;
-            // 
-            // phoneField
-            // 
-            this.phoneField.Location = new System.Drawing.Point(132, 170);
-            this.phoneField.Name = "phoneField";
-            this.phoneField.Size = new System.Drawing.Size(149, 20);
-            this.phoneField.TabIndex = 31;
             // 
             // experienceField
             // 
@@ -228,12 +223,14 @@
             this.buttonAddEmployee.TabIndex = 26;
             this.buttonAddEmployee.Text = "Добавить";
             this.buttonAddEmployee.UseVisualStyleBackColor = true;
+            this.buttonAddEmployee.Click += new System.EventHandler(this.buttonAddEmployee_Click);
             // 
             // dataGridViewEmployee
             // 
             this.dataGridViewEmployee.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
             | System.Windows.Forms.AnchorStyles.Left) 
             | System.Windows.Forms.AnchorStyles.Right)));
+            this.dataGridViewEmployee.AutoSizeColumnsMode = System.Windows.Forms.DataGridViewAutoSizeColumnsMode.Fill;
             this.dataGridViewEmployee.ColumnHeadersHeightSizeMode = System.Windows.Forms.DataGridViewColumnHeadersHeightSizeMode.AutoSize;
             this.dataGridViewEmployee.Location = new System.Drawing.Point(299, 6);
             this.dataGridViewEmployee.Name = "dataGridViewEmployee";
@@ -241,6 +238,7 @@
             this.dataGridViewEmployee.RowHeadersWidth = 47;
             this.dataGridViewEmployee.Size = new System.Drawing.Size(690, 387);
             this.dataGridViewEmployee.TabIndex = 25;
+            this.dataGridViewEmployee.RowHeaderMouseClick += new System.Windows.Forms.DataGridViewCellMouseEventHandler(this.employeeData_RowHeaderMouseClick_1);
             // 
             // button4
             // 
@@ -250,6 +248,7 @@
             this.button4.TabIndex = 24;
             this.button4.Text = "Вернуть из отпуска";
             this.button4.UseVisualStyleBackColor = true;
+            this.button4.Click += new System.EventHandler(this.button4_Click);
             // 
             // button3
             // 
@@ -269,6 +268,7 @@
             this.buttonDeleteEmployee.TabIndex = 22;
             this.buttonDeleteEmployee.Text = "Удалить";
             this.buttonDeleteEmployee.UseVisualStyleBackColor = true;
+            this.buttonDeleteEmployee.Click += new System.EventHandler(this.buttonDeleteEmployee_Click);
             // 
             // buttonEditEmployee
             // 
@@ -278,11 +278,12 @@
             this.buttonEditEmployee.TabIndex = 21;
             this.buttonEditEmployee.Text = "Изменить";
             this.buttonEditEmployee.UseVisualStyleBackColor = true;
+            this.buttonEditEmployee.Click += new System.EventHandler(this.buttonEditEmployee_Click);
             // 
             // label8
             // 
             this.label8.AutoSize = true;
-            this.label8.Location = new System.Drawing.Point(22, 268);
+            this.label8.Location = new System.Drawing.Point(22, 244);
             this.label8.Name = "label8";
             this.label8.Size = new System.Drawing.Size(45, 13);
             this.label8.TabIndex = 7;
@@ -291,7 +292,7 @@
             // label7
             // 
             this.label7.AutoSize = true;
-            this.label7.Location = new System.Drawing.Point(22, 234);
+            this.label7.Location = new System.Drawing.Point(22, 210);
             this.label7.Name = "label7";
             this.label7.Size = new System.Drawing.Size(38, 13);
             this.label7.TabIndex = 6;
@@ -300,20 +301,11 @@
             // label6
             // 
             this.label6.AutoSize = true;
-            this.label6.Location = new System.Drawing.Point(22, 202);
+            this.label6.Location = new System.Drawing.Point(22, 178);
             this.label6.Name = "label6";
             this.label6.Size = new System.Drawing.Size(102, 13);
             this.label6.TabIndex = 5;
             this.label6.Text = "ID_Специальности";
-            // 
-            // label5
-            // 
-            this.label5.AutoSize = true;
-            this.label5.Location = new System.Drawing.Point(22, 173);
-            this.label5.Name = "label5";
-            this.label5.Size = new System.Drawing.Size(52, 13);
-            this.label5.TabIndex = 4;
-            this.label5.Text = "Телефон";
             // 
             // label4
             // 
@@ -353,6 +345,12 @@
             // 
             // tabPage2
             // 
+            this.tabPage2.Controls.Add(this.price);
+            this.tabPage2.Controls.Add(this.label25);
+            this.tabPage2.Controls.Add(this.manufacturer);
+            this.tabPage2.Controls.Add(this.label10);
+            this.tabPage2.Controls.Add(this.sideEffects);
+            this.tabPage2.Controls.Add(this.label9);
             this.tabPage2.Controls.Add(this.buttonEditMedicament);
             this.tabPage2.Controls.Add(this.buttonAddMedicament);
             this.tabPage2.Controls.Add(this.dataGridView3);
@@ -368,23 +366,74 @@
             this.tabPage2.Text = "Лекарства";
             this.tabPage2.UseVisualStyleBackColor = true;
             // 
+            // price
+            // 
+            this.price.Location = new System.Drawing.Point(117, 321);
+            this.price.Name = "price";
+            this.price.Size = new System.Drawing.Size(100, 20);
+            this.price.TabIndex = 19;
+            // 
+            // label25
+            // 
+            this.label25.AutoSize = true;
+            this.label25.Location = new System.Drawing.Point(30, 324);
+            this.label25.Name = "label25";
+            this.label25.Size = new System.Drawing.Size(33, 13);
+            this.label25.TabIndex = 18;
+            this.label25.Text = "Цена";
+            // 
+            // manufacturer
+            // 
+            this.manufacturer.Location = new System.Drawing.Point(117, 284);
+            this.manufacturer.Name = "manufacturer";
+            this.manufacturer.Size = new System.Drawing.Size(129, 20);
+            this.manufacturer.TabIndex = 17;
+            // 
+            // label10
+            // 
+            this.label10.AutoSize = true;
+            this.label10.Location = new System.Drawing.Point(31, 287);
+            this.label10.Name = "label10";
+            this.label10.Size = new System.Drawing.Size(86, 13);
+            this.label10.TabIndex = 16;
+            this.label10.Text = "Производитель";
+            // 
+            // sideEffects
+            // 
+            this.sideEffects.Location = new System.Drawing.Point(99, 178);
+            this.sideEffects.Multiline = true;
+            this.sideEffects.Name = "sideEffects";
+            this.sideEffects.Size = new System.Drawing.Size(291, 83);
+            this.sideEffects.TabIndex = 15;
+            // 
+            // label9
+            // 
+            this.label9.AutoSize = true;
+            this.label9.Location = new System.Drawing.Point(30, 178);
+            this.label9.Name = "label9";
+            this.label9.Size = new System.Drawing.Size(58, 26);
+            this.label9.TabIndex = 14;
+            this.label9.Text = "Побочные\r\nэффекты";
+            // 
             // buttonEditMedicament
             // 
-            this.buttonEditMedicament.Location = new System.Drawing.Point(176, 323);
+            this.buttonEditMedicament.Location = new System.Drawing.Point(164, 370);
             this.buttonEditMedicament.Name = "buttonEditMedicament";
             this.buttonEditMedicament.Size = new System.Drawing.Size(111, 23);
             this.buttonEditMedicament.TabIndex = 13;
             this.buttonEditMedicament.Text = "Изменить";
             this.buttonEditMedicament.UseVisualStyleBackColor = true;
+            this.buttonEditMedicament.Click += new System.EventHandler(this.buttonEditMedicament_Click);
             // 
             // buttonAddMedicament
             // 
-            this.buttonAddMedicament.Location = new System.Drawing.Point(23, 323);
+            this.buttonAddMedicament.Location = new System.Drawing.Point(24, 370);
             this.buttonAddMedicament.Name = "buttonAddMedicament";
             this.buttonAddMedicament.Size = new System.Drawing.Size(112, 23);
             this.buttonAddMedicament.TabIndex = 12;
             this.buttonAddMedicament.Text = "Добавить";
             this.buttonAddMedicament.UseVisualStyleBackColor = true;
+            this.buttonAddMedicament.Click += new System.EventHandler(this.buttonAddMedicament_Click);
             // 
             // dataGridView3
             // 
@@ -401,30 +450,31 @@
             this.dataGridView3.RowHeadersWidth = 47;
             this.dataGridView3.Size = new System.Drawing.Size(498, 387);
             this.dataGridView3.TabIndex = 11;
+            this.dataGridView3.RowHeaderMouseClick += new System.Windows.Forms.DataGridViewCellMouseEventHandler(this.medicamentData_RowHeaderMouseClick_1);
             // 
             // descriptionMedic
             // 
             this.descriptionMedic.Location = new System.Drawing.Point(99, 78);
             this.descriptionMedic.Multiline = true;
             this.descriptionMedic.Name = "descriptionMedic";
-            this.descriptionMedic.Size = new System.Drawing.Size(291, 169);
+            this.descriptionMedic.Size = new System.Drawing.Size(291, 83);
             this.descriptionMedic.TabIndex = 10;
             // 
             // nameMedic
             // 
             this.nameMedic.Location = new System.Drawing.Point(99, 40);
             this.nameMedic.Name = "nameMedic";
-            this.nameMedic.Size = new System.Drawing.Size(100, 20);
+            this.nameMedic.Size = new System.Drawing.Size(291, 20);
             this.nameMedic.TabIndex = 9;
             // 
             // label23
             // 
             this.label23.AutoSize = true;
-            this.label23.Location = new System.Drawing.Point(33, 78);
+            this.label23.Location = new System.Drawing.Point(30, 78);
             this.label23.Name = "label23";
-            this.label23.Size = new System.Drawing.Size(57, 13);
+            this.label23.Size = new System.Drawing.Size(69, 26);
             this.label23.TabIndex = 8;
-            this.label23.Text = "Описание";
+            this.label23.Text = "Способ\r\nприменения";
             // 
             // label24
             // 
@@ -460,6 +510,7 @@
             this.buttonEditSpec.TabIndex = 13;
             this.buttonEditSpec.Text = "Изменить";
             this.buttonEditSpec.UseVisualStyleBackColor = true;
+            this.buttonEditSpec.Click += new System.EventHandler(this.buttonEditSpec_Click);
             // 
             // buttonAddSpec
             // 
@@ -469,6 +520,7 @@
             this.buttonAddSpec.TabIndex = 12;
             this.buttonAddSpec.Text = "Добавить";
             this.buttonAddSpec.UseVisualStyleBackColor = true;
+            this.buttonAddSpec.Click += new System.EventHandler(this.buttonAddSpec_Click);
             // 
             // dataGridView2
             // 
@@ -485,6 +537,7 @@
             this.dataGridView2.RowHeadersWidth = 47;
             this.dataGridView2.Size = new System.Drawing.Size(498, 387);
             this.dataGridView2.TabIndex = 11;
+            this.dataGridView2.RowHeaderMouseClick += new System.Windows.Forms.DataGridViewCellMouseEventHandler(this.specData_RowHeaderMouseClick_1);
             // 
             // descriptionSpec
             // 
@@ -498,7 +551,7 @@
             // 
             this.nameSpec.Location = new System.Drawing.Point(99, 40);
             this.nameSpec.Name = "nameSpec";
-            this.nameSpec.Size = new System.Drawing.Size(100, 20);
+            this.nameSpec.Size = new System.Drawing.Size(291, 20);
             this.nameSpec.TabIndex = 9;
             // 
             // label21
@@ -544,6 +597,7 @@
             this.buttonEditDiagnos.TabIndex = 6;
             this.buttonEditDiagnos.Text = "Изменить";
             this.buttonEditDiagnos.UseVisualStyleBackColor = true;
+            this.buttonEditDiagnos.Click += new System.EventHandler(this.buttonEditDiagnos_Click);
             // 
             // buttonAddDiagnos
             // 
@@ -553,6 +607,7 @@
             this.buttonAddDiagnos.TabIndex = 5;
             this.buttonAddDiagnos.Text = "Добавить";
             this.buttonAddDiagnos.UseVisualStyleBackColor = true;
+            this.buttonAddDiagnos.Click += new System.EventHandler(this.buttonAddDiagnos_Click);
             // 
             // dataGridViewDiagnosis
             // 
@@ -569,20 +624,21 @@
             this.dataGridViewDiagnosis.RowHeadersWidth = 47;
             this.dataGridViewDiagnosis.Size = new System.Drawing.Size(498, 387);
             this.dataGridViewDiagnosis.TabIndex = 4;
+            this.dataGridViewDiagnosis.RowHeaderMouseClick += new System.Windows.Forms.DataGridViewCellMouseEventHandler(this.diagnosData_RowHeaderMouseClick_1);
             // 
             // textBoxDDescription
             // 
             this.textBoxDDescription.Location = new System.Drawing.Point(116, 78);
             this.textBoxDDescription.Multiline = true;
             this.textBoxDDescription.Name = "textBoxDDescription";
-            this.textBoxDDescription.Size = new System.Drawing.Size(291, 169);
+            this.textBoxDDescription.Size = new System.Drawing.Size(291, 165);
             this.textBoxDDescription.TabIndex = 3;
             // 
             // textBoxDName
             // 
             this.textBoxDName.Location = new System.Drawing.Point(116, 40);
             this.textBoxDName.Name = "textBoxDName";
-            this.textBoxDName.Size = new System.Drawing.Size(100, 20);
+            this.textBoxDName.Size = new System.Drawing.Size(291, 20);
             this.textBoxDName.TabIndex = 2;
             // 
             // label20
@@ -617,6 +673,7 @@
             // 
             // buttonDeleteHistory
             // 
+            this.buttonDeleteHistory.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
             this.buttonDeleteHistory.Location = new System.Drawing.Point(829, 348);
             this.buttonDeleteHistory.Name = "buttonDeleteHistory";
             this.buttonDeleteHistory.Size = new System.Drawing.Size(164, 45);
@@ -637,6 +694,7 @@
             this.dataGridHistory.RowHeadersWidth = 47;
             this.dataGridHistory.Size = new System.Drawing.Size(987, 336);
             this.dataGridHistory.TabIndex = 0;
+            this.dataGridHistory.RowHeaderMouseClick += new System.Windows.Forms.DataGridViewCellMouseEventHandler(this.historyData_RowHeaderMouseClick_1);
             // 
             // tabPage6
             // 
@@ -677,6 +735,9 @@
             // comboBox1
             // 
             this.comboBox1.FormattingEnabled = true;
+            this.comboBox1.Items.AddRange(new object[] {
+            "Мужской",
+            "Женский"});
             this.comboBox1.Location = new System.Drawing.Point(142, 97);
             this.comboBox1.Name = "comboBox1";
             this.comboBox1.Size = new System.Drawing.Size(155, 21);
@@ -732,6 +793,7 @@
             this.buttonDeletePac.TabIndex = 20;
             this.buttonDeletePac.Text = "Удалить";
             this.buttonDeletePac.UseVisualStyleBackColor = true;
+            this.buttonDeletePac.Click += new System.EventHandler(this.buttonDeletePac_Click);
             // 
             // buttonEditPac
             // 
@@ -741,6 +803,7 @@
             this.buttonEditPac.TabIndex = 19;
             this.buttonEditPac.Text = "Изменить";
             this.buttonEditPac.UseVisualStyleBackColor = true;
+            this.buttonEditPac.Click += new System.EventHandler(this.buttonEditPac_Click);
             // 
             // dataGridView1
             // 
@@ -755,6 +818,7 @@
             this.dataGridView1.RowHeadersWidth = 47;
             this.dataGridView1.Size = new System.Drawing.Size(690, 387);
             this.dataGridView1.TabIndex = 18;
+            this.dataGridView1.RowHeaderMouseClick += new System.Windows.Forms.DataGridViewCellMouseEventHandler(this.pacientData_RowHeaderMouseClick_1);
             // 
             // label11
             // 
@@ -870,7 +934,6 @@
         private System.Windows.Forms.Label label8;
         private System.Windows.Forms.Label label7;
         private System.Windows.Forms.Label label6;
-        private System.Windows.Forms.Label label5;
         private System.Windows.Forms.Label label4;
         private System.Windows.Forms.Label label3;
         private System.Windows.Forms.Label label2;
@@ -919,7 +982,6 @@
         private System.Windows.Forms.TextBox passwordField;
         private System.Windows.Forms.TextBox loginField;
         private System.Windows.Forms.TextBox idSpecField;
-        private System.Windows.Forms.TextBox phoneField;
         private System.Windows.Forms.TextBox experienceField;
         private System.Windows.Forms.TextBox cabinetField;
         private System.Windows.Forms.TextBox surNameField;
@@ -932,5 +994,11 @@
         private System.Windows.Forms.TextBox textBox3;
         private System.Windows.Forms.TextBox textBox2;
         private System.Windows.Forms.TextBox textBox1;
+        private System.Windows.Forms.TextBox price;
+        private System.Windows.Forms.Label label25;
+        private System.Windows.Forms.TextBox manufacturer;
+        private System.Windows.Forms.Label label10;
+        private System.Windows.Forms.TextBox sideEffects;
+        private System.Windows.Forms.Label label9;
     }
 }

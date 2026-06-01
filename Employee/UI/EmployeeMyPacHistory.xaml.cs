@@ -71,7 +71,6 @@ namespace WPF_POLYCLINIC_DB_CourseWork.Employee.UI
             }
         }
 
-        // Добавьте эти методы внутрь класса EmployeeMyPacHistory
         public void InvokePatientChanged(Patient newPatient)
         {
             this.patient = newPatient;

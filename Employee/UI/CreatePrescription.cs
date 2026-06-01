@@ -67,7 +67,7 @@ namespace WPF_POLYCLINIC_DB_CourseWork.Employee.UI
             _employeeService.CompleteAppointment(idHistory);
             WPF_POLYCLINIC_DB_CourseWork.Employee.UI.MainEmployeeWindow.ResetCurrentSession();
 
-            // 3. Выводим уведомление и закрываем текущую форму рецепта
+            // Выводим уведомление и закрываем текущую форму рецепта
             MessageBox.Show("Приём успешно завершён!", "Успех", MessageBoxButtons.OK, MessageBoxIcon.Information);
             this.Close();
         }

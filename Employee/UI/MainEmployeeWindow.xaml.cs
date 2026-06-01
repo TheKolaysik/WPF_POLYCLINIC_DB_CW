@@ -34,8 +34,7 @@ namespace WPF_POLYCLINIC_DB_CourseWork.Employee.UI
             (newPatient) =>
             {
                 currentPacient = newPatient;
-
-                // Находим активное окно приложения, чтобы получить доступ к элементам UI
+               
                 var mainWindow = Application.Current.Windows.OfType<MainEmployeeWindow>().FirstOrDefault();
                 if (mainWindow != null)
                 {
@@ -62,17 +61,15 @@ namespace WPF_POLYCLINIC_DB_CourseWork.Employee.UI
             txtPacientfio.Text = "Пациент не выбран";
         }
 
-        // Метод для завершения приема и сброса текущего пациента/истории
+        // Метод для завершения приема и сброса текущего пациента
         public static void ResetCurrentSession()
         {
             currentPacient = null;
             historyRecord = null;
 
-            // Вызываем колбэк, который автоматически обновит StatusBar главного окна
             employeeMyPacHistory?.InvokePatientChanged(null);
             employeeMyPacHistory?.InvokeHistoryChanged(null);
 
-            // Находим активное окно, чтобы принудительно обновить отображение данных в таблице
             var mainWindow = System.Windows.Application.Current.Windows.OfType<MainEmployeeWindow>().FirstOrDefault();
             if (mainWindow != null)
             {

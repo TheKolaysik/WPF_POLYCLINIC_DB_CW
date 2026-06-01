@@ -292,7 +292,11 @@ namespace WPF_POLYCLINIC_DB_CourseWork.Employee.Logic
                 spec.Name AS [Специальность], 
                 COUNT(p.NumberPolicy) AS [Количество_пациентов], 
                 d.Experience AS [Стаж], 
-                d.Cabinet AS [Кабинет] 
+                d.Cabinet AS [Кабинет],
+                d.ID_specialization,
+                d.Working,
+                d.Vacation,
+                d.Login
             FROM [Врач] d
             LEFT JOIN [Специальность] spec ON d.ID_specialization = spec.ID_specialization
             LEFT JOIN [Пациент] p ON p.DistrictDoctor = d.ID_doctor
@@ -302,7 +306,11 @@ namespace WPF_POLYCLINIC_DB_CourseWork.Employee.Logic
                 d.SurName, 
                 spec.Name, 
                 d.Experience, 
-                d.Cabinet";
+                d.Cabinet,
+                d.ID_specialization,
+                d.Working,
+                d.Vacation,
+                d.Login";
 
             using (var conn = new SqlConnection(connectionString))
             {
@@ -379,7 +387,10 @@ namespace WPF_POLYCLINIC_DB_CourseWork.Employee.Logic
                 p.ID_pacient AS [ID Пациента],
                 p.SurName AS [Фамилия],
                 p.FirstName AS [Имя],
-                p.NumberPolicy AS [Номер полиса],
+                p.Gender AS [Пол],
+                p.DateOfBirth AS [Дата рождения],
+                p.PlaceOfLiving AS [Место проживания],
+                p.NumberPolicy AS [Номер полиса],                
                 p.Phone AS [Телефон],
                 p.DistrictDoctor,
                 (d.SurName + ' ' + d.FirstName) AS [DoctorName]
@@ -494,11 +505,11 @@ namespace WPF_POLYCLINIC_DB_CourseWork.Employee.Logic
             {
                 conn.Open();
 
-                // 1. Личные данные врача (Строго по схеме: Surname, FirstName, Cabinet)
+                
                 string doctorSql = @"
-            SELECT ID_doctor, Surname, FirstName, Cabinet 
-            FROM [Врач] 
-            WHERE ID_doctor = @DoctorId";
+                    SELECT ID_doctor, Surname, FirstName, Cabinet 
+                    FROM [Врач] 
+                    WHERE ID_doctor = @DoctorId";
 
                 using (SqlCommand cmd = new SqlCommand(doctorSql, conn))
                 {
@@ -520,20 +531,20 @@ namespace WPF_POLYCLINIC_DB_CourseWork.Employee.Logic
 
                 if (doctor == null) return null;
 
-                // 2. Все приёмы данного врача с данными пациентов (ID_pacient -> Пациент)
+                // Все приёмы данного врача с данными пациентов 
                 string historySql = @"
-            SELECT 
-                h.ID_history, 
-                h.Date, 
-                h.Symptoms, 
-                h.Status,
-                p.ID_pacient,
-                (p.Surname + ' ' + p.FirstName) AS PatientName,
-                p.NumberPolicy
-            FROM [История] h 
-            INNER JOIN [Пациент] p ON h.ID_pacient = p.ID_pacient 
-            WHERE h.ID_doctor = @DoctorId
-            ORDER BY h.Date DESC";
+                    SELECT 
+                        h.ID_history, 
+                        h.Date, 
+                        h.Symptoms, 
+                        h.Status,
+                        p.ID_pacient,
+                        (p.Surname + ' ' + p.FirstName) AS PatientName,
+                        p.NumberPolicy
+                    FROM [История] h 
+                    INNER JOIN [Пациент] p ON h.ID_pacient = p.ID_pacient 
+                    WHERE h.ID_doctor = @DoctorId
+                    ORDER BY h.Date DESC";
 
                 using (SqlCommand cmd = new SqlCommand(historySql, conn))
                 {
@@ -556,17 +567,17 @@ namespace WPF_POLYCLINIC_DB_CourseWork.Employee.Logic
                     }
                 }
 
-                // 3. Все диагнозы, поставленные этим врачом на его приёмах
+                // Все диагнозы, поставленные этим врачом на его приёмах
                 string diagnosesSql = @"
-            SELECT 
-                dh.ID_history,
-                d.ID_diagnos,
-                d.Name,
-                d.Description
-            FROM [Диагноз_История] dh
-            INNER JOIN [Диагноз] d ON dh.ID_diagnos = d.ID_diagnos
-            INNER JOIN [История] h ON dh.ID_history = h.ID_history
-            WHERE h.ID_doctor = @DoctorId";
+                    SELECT 
+                        dh.ID_history,
+                        d.ID_diagnos,
+                        d.Name,
+                        d.Description
+                    FROM [Диагноз_История] dh
+                    INNER JOIN [Диагноз] d ON dh.ID_diagnos = d.ID_diagnos
+                    INNER JOIN [История] h ON dh.ID_history = h.ID_history
+                    WHERE h.ID_doctor = @DoctorId";
 
                 using (SqlCommand cmd = new SqlCommand(diagnosesSql, conn))
                 {
@@ -590,22 +601,22 @@ namespace WPF_POLYCLINIC_DB_CourseWork.Employee.Logic
                     }
                 }
 
-                // 4. Все рецепты и лекарства, выписанные врачом
+                // Все рецепты и лекарства, выписанные врачом
                 string prescriptionsSql = @"
-            SELECT 
-                hp.ID_history, 
-                p.ID_prescription, 
-                p.IssueDate, 
-                p.Instruction,
-                m.Name AS MedName, 
-                m.Manufacturer, 
-                m.Price
-            FROM [История] h
-            INNER JOIN [История_Рецепт] hp ON h.ID_history = hp.ID_history
-            INNER JOIN [Рецепт] p ON hp.ID_prescription = p.ID_prescription
-            INNER JOIN [Лекарство_Рецепт] mp ON p.ID_prescription = mp.ID_prescription
-            INNER JOIN [Лекарство] m ON mp.ID_medicament = m.ID_medicament
-            WHERE h.ID_doctor = @DoctorId";
+                    SELECT 
+                        hp.ID_history, 
+                        p.ID_prescription, 
+                        p.IssueDate, 
+                        p.Instruction,
+                        m.Name AS MedName, 
+                        m.Manufacturer, 
+                        m.Price
+                    FROM [История] h
+                    INNER JOIN [История_Рецепт] hp ON h.ID_history = hp.ID_history
+                    INNER JOIN [Рецепт] p ON hp.ID_prescription = p.ID_prescription
+                    INNER JOIN [Лекарство_Рецепт] mp ON p.ID_prescription = mp.ID_prescription
+                    INNER JOIN [Лекарство] m ON mp.ID_medicament = m.ID_medicament
+                    WHERE h.ID_doctor = @DoctorId";
 
                 using (SqlCommand cmd = new SqlCommand(prescriptionsSql, conn))
                 {
@@ -699,7 +710,7 @@ namespace WPF_POLYCLINIC_DB_CourseWork.Employee.Logic
                             foreach (var pr in h.Prescriptions)
                             {
                                 Word.Paragraph rPara = document.Paragraphs.Add();
-                                rPara.Range.Text = $"      => Выписан Рецепт №{pr.Id} (Инструкция: {pr.Instruction}):\n" +
+                                rPara.Range.Text = $"      => Выписан Рецепт №{pr.Id} (Описание: {pr.Instruction}):\n" +
                                                    string.Join("\n", pr.Medicaments.Select(m => $"         - {m.Name} [{m.Manufacturer}]"));
                                 rPara.Range.Font.Size = 11;
                                 rPara.Range.Font.Italic = 1;

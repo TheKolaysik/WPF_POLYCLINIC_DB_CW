@@ -62,6 +62,7 @@ namespace WPF_POLYCLINIC_DB_CourseWork.Pacient.Logic
 
             connection.Open();
             int count = Convert.ToInt32(cmd.ExecuteScalar());
+            connection.Close();
 
             return count > 0;
 
@@ -76,6 +77,7 @@ namespace WPF_POLYCLINIC_DB_CourseWork.Pacient.Logic
 
             connection.Open();
             int count = Convert.ToInt32(cmd.ExecuteScalar());
+            connection.Close();
 
             return count > 0;
 
@@ -180,17 +182,17 @@ namespace WPF_POLYCLINIC_DB_CourseWork.Pacient.Logic
             string result = "Ближайших приемов не запланировано";
 
             string sql = @"
-            SELECT TOP 1
-                h.Date,
-                (d.SurName + ' ' + d.FirstName) AS DoctorName,
-                s.Name AS SpecializationName,
-                d.Cabinet AS Cabinet
-            FROM [История] h
-            INNER JOIN [Врач] d ON h.ID_doctor = d.ID_doctor
-            INNER JOIN [Специальность] s ON d.ID_specialization = s.ID_specialization
-            WHERE h.ID_pacient = @IdPacient
-              AND h.Date >= GETDATE() AND h.Status != 'Завершённый'
-            ORDER BY h.Date ASC";
+                SELECT TOP 1
+                    h.Date,
+                    (d.SurName + ' ' + d.FirstName) AS DoctorName,
+                    s.Name AS SpecializationName,
+                    d.Cabinet AS Cabinet
+                FROM [История] h
+                INNER JOIN [Врач] d ON h.ID_doctor = d.ID_doctor
+                INNER JOIN [Специальность] s ON d.ID_specialization = s.ID_specialization
+                WHERE h.ID_pacient = @IdPacient
+                  AND h.Date >= GETDATE() AND h.Status != 'Завершённый'
+                ORDER BY h.Date ASC";
 
             cmd = new SqlCommand(sql, connection);
             cmd.Parameters.Add("@IdPacient", SqlDbType.BigInt).Value = idPacient;
@@ -219,22 +221,22 @@ namespace WPF_POLYCLINIC_DB_CourseWork.Pacient.Logic
         public void LoadPrescriptionDetails(long prescriptionId, System.Windows.Forms.TextBox pacient, System.Windows.Forms.TextBox doctor, System.Windows.Forms.TextBox date, System.Windows.Forms.TextBox txtInstruction, DataGridView dataGrid)
         {
             string sqlInstruction = @"
-        SELECT TOP 1 
-            [IssueDate], 
-            [Instruction], 
-            [PatientName], 
-            [DoctorName]
-        FROM [View_PatientPrescriptions] 
-        WHERE [PrescriptionID] = @Id";
+                SELECT TOP 1 
+                    [IssueDate], 
+                    [Instruction], 
+                    [PatientName], 
+                    [DoctorName]
+                FROM [View_PatientPrescriptions] 
+                WHERE [PrescriptionID] = @Id";
 
             string sqlMedicaments = @"
-        SELECT 
-            [MedicamentName] AS [Название лекарства],
-            [MethodOfApplication] AS [Способ применения],
-            [SideEffects] AS [Побочные эффекты],
-            [Manufacturer] AS [Производитель]
-        FROM [View_FullPrescriptionDetails]
-        WHERE [PrescriptionID] = @Id";
+                SELECT 
+                    [MedicamentName] AS [Название лекарства],
+                    [MethodOfApplication] AS [Способ применения],
+                    [SideEffects] AS [Побочные эффекты],
+                    [Manufacturer] AS [Производитель]
+                FROM [View_FullPrescriptionDetails]
+                WHERE [PrescriptionID] = @Id";
 
             using (SqlConnection conn = new SqlConnection(connection.ConnectionString))
             {
@@ -290,17 +292,17 @@ namespace WPF_POLYCLINIC_DB_CourseWork.Pacient.Logic
             // Получаем врача по ID
             var doctor = connection.QueryFirstOrDefault<Doctor>(
                 @"SELECT d.ID_doctor AS [ID_doctor], 
-        d.FirstName AS [FirstName], 
-        d.SurName AS [SurName], 
-        d.Cabinet AS [Cabinet],
-        d.Experience AS [Experience],
-        d.Phone AS [Phone],
-        d.Working AS [Working],
-        d.Vacation AS [Vacation],
-        d.Login AS [Login],
-        d.Password AS [Password],
-        spec.Name AS [SpecializationName]
-         FROM [Врач] d LEFT JOIN [Специальность] spec ON d.ID_specialization = spec.ID_specialization WHERE ID_doctor = @ID",
+                d.FirstName AS [FirstName], 
+                d.SurName AS [SurName], 
+                d.Cabinet AS [Cabinet],
+                d.Experience AS [Experience],
+                d.Phone AS [Phone],
+                d.Working AS [Working],
+                d.Vacation AS [Vacation],
+                d.Login AS [Login],
+                d.Password AS [Password],
+                spec.Name AS [SpecializationName]
+                 FROM [Врач] d LEFT JOIN [Специальность] spec ON d.ID_specialization = spec.ID_specialization WHERE ID_doctor = @ID",
                 new { ID = id }
             );
 
@@ -338,16 +340,16 @@ namespace WPF_POLYCLINIC_DB_CourseWork.Pacient.Logic
                 if (patient == null) return null;
 
                 string historySql = @"
-            SELECT 
-                h.ID_history, 
-                h.Date, 
-                h.Symptoms, 
-                h.Status, 
-                (d.Surname + ' ' + d.FirstName) AS DocName 
-            FROM [История] h 
-            LEFT JOIN [Врач] d ON h.ID_doctor = d.ID_doctor 
-            WHERE h.ID_pacient = @PatientId
-            ORDER BY h.Date";
+                    SELECT 
+                        h.ID_history, 
+                        h.Date, 
+                        h.Symptoms, 
+                        h.Status, 
+                        (d.Surname + ' ' + d.FirstName) AS DocName 
+                    FROM [История] h 
+                    LEFT JOIN [Врач] d ON h.ID_doctor = d.ID_doctor 
+                    WHERE h.ID_pacient = @PatientId
+                    ORDER BY h.Date";
 
                 using (SqlCommand cmd = new SqlCommand(historySql, conn))
                 {
@@ -511,7 +513,7 @@ namespace WPF_POLYCLINIC_DB_CourseWork.Pacient.Logic
                 }
                 else if (includePrescriptions)
                 {
-                    // Сценарий конструктора: историю отключили, но рецепты выгрузить надо
+                    
                     worksheet.Cells[currentRow, 1] = "Сводный реестр рецептов за период:";
                     ((Excel.Range)worksheet.Cells[currentRow, 1]).Font.Bold = true;
                     currentRow += 2;
@@ -523,7 +525,7 @@ namespace WPF_POLYCLINIC_DB_CourseWork.Pacient.Logic
                             worksheet.Cells[currentRow, 1] = $"Рецепт №{pr.Id} от {pr.IssueDate.ToShortDateString()}";
                             ((Excel.Range)worksheet.Cells[currentRow, 1]).Font.Bold = true;
                             currentRow++;
-                            worksheet.Cells[currentRow, 1] = $"Инструкция: {pr.Instruction}";
+                            worksheet.Cells[currentRow, 1] = $"Описание: {pr.Instruction}";
                             currentRow++;
 
                             foreach (var m in pr.Medicaments)
@@ -567,7 +569,7 @@ namespace WPF_POLYCLINIC_DB_CourseWork.Pacient.Logic
                 documents = wordApp.Documents;
                 document = documents.Add();
 
-                // Главный заголовок — ЗАГОВОЛОК (Жирный, Левый край)
+                // Главный заголовок 
                 Word.Paragraph titlePara = document.Paragraphs.Add();
                 titlePara.Range.Text = "Выписка из медицинской карты";
                 titlePara.Range.Font.Size = 16;
@@ -575,7 +577,7 @@ namespace WPF_POLYCLINIC_DB_CourseWork.Pacient.Logic
                 titlePara.Alignment = Word.WdParagraphAlignment.wdAlignParagraphLeft; // Левый край
                 titlePara.Range.InsertParagraphAfter();
 
-                // Период — Обычный текст (НЕ жирный, Левый край)
+                
                 Word.Paragraph periodPara = document.Paragraphs.Add();
                 periodPara.Range.Text = $"";
                 periodPara.Range.Font.Size = 11;
@@ -583,7 +585,7 @@ namespace WPF_POLYCLINIC_DB_CourseWork.Pacient.Logic
                 periodPara.Alignment = Word.WdParagraphAlignment.wdAlignParagraphLeft; // Левый край
                 periodPara.Range.InsertParagraphAfter();
 
-                // Чекбокс: Личные данные
+                // Личные данные
                 if (includePersonalInfo)
                 {
                     Word.Paragraph infoPara = document.Paragraphs.Add();
@@ -596,7 +598,7 @@ namespace WPF_POLYCLINIC_DB_CourseWork.Pacient.Logic
                     infoPara.Range.InsertParagraphAfter();
                 }
 
-                // Чекбокс: История приёмов
+                // История приёмов
                 if (includeHistory)
                 {
                     // Заголовок раздела — ЗАГОВОЛОК (Жирный)
@@ -626,11 +628,11 @@ namespace WPF_POLYCLINIC_DB_CourseWork.Pacient.Logic
                             foreach (var pr in h.Prescriptions)
                             {
                                 Word.Paragraph rPara = document.Paragraphs.Add();
-                                rPara.Range.Text = $"      => Выписан Рецепт №{pr.Id} (Инструкция: {pr.Instruction}):\n" +
+                                rPara.Range.Text = $"      => Выписан Рецепт №{pr.Id} (Описание: {pr.Instruction}):\n" +
                                                    $"         Препараты:";
                                 rPara.Range.Font.Size = 11;
                                 rPara.Range.Font.Bold = 0; // Обычный
-                                rPara.Range.Font.Italic = 1; // Курсив для наглядности структуры (не жирный)
+                                rPara.Range.Font.Italic = 1; 
                                 rPara.Alignment = Word.WdParagraphAlignment.wdAlignParagraphLeft;
                                 rPara.Range.InsertParagraphAfter();
 
@@ -665,8 +667,7 @@ namespace WPF_POLYCLINIC_DB_CourseWork.Pacient.Logic
                         {
                             Word.Paragraph rPara = document.Paragraphs.Add();
                             rPara.Range.Text = $"• Рецепт №{pr.Id} от {pr.IssueDate.ToShortDateString()}\n" +
-                                               $"  Применение: {pr.Instruction}\n" +
-                                               $"  Состав лекарств:";
+                                               $"  Применение: {pr.Instruction}";
                             rPara.Range.Font.Size = 11;
                             rPara.Range.Font.Bold = 0; // Обычный
                             rPara.Alignment = Word.WdParagraphAlignment.wdAlignParagraphLeft;

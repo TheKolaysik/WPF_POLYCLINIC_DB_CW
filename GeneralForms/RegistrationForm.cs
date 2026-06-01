@@ -52,7 +52,7 @@ namespace WPF_POLYCLINIC_DB_CourseWork
         {
             String errorMessage;
             string fName = firstName.Text.Trim();
-            string lName = firstName.Text.Trim();
+            string lName = surName.Text.Trim();
             string plOfLive = placeOfLiving.Text;
             string ph = phone.Text;
             string log = login.Text.Trim();
@@ -149,7 +149,7 @@ namespace WPF_POLYCLINIC_DB_CourseWork
             }
             else
             {
-                string pattern = @"^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&])[A-Za-z\d@$!%*?&]{8,}$";
+                string pattern = @"^[a-zA-Z0-9_]{4,20}$";
                 if (!Regex.IsMatch(pass, pattern))
                 {
                     errorMessage += "Неверный формат пароля\n";
@@ -218,7 +218,7 @@ namespace WPF_POLYCLINIC_DB_CourseWork
             int sum = 0;
             bool doubleDigit = true;
 
-            // Идем с конца (14-й индекс) к началу
+            // Идем с конца к началу
             for (int i = digits.Length - 1; i >= 0; i--)
             {
                 int val = digits[i];
